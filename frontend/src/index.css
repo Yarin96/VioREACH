@@ -1,0 +1,13 @@
+html {
+  font-family: sans-serif;
+  background-color: rgb(226, 226, 226);
+}
+
+body {
+  margin: 0;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  background-color: transparent;
+}
