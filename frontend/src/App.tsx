@@ -11,7 +11,7 @@ import RootLayout from "./shared/components/RootLayout/RootLayout";
 import Introduction from "./components/Introduction/Introduction";
 import About from "./components/About/About";
 import Detection from "./components/Detection/Detection";
-import Auth from "./user/Auth/Auth";
+import AuthForm from "./components/AuthForm/AuthForm";
 import { AuthContext } from "./shared/context/auth-context";
 
 const router = createBrowserRouter(
@@ -21,7 +21,7 @@ const router = createBrowserRouter(
       <Route index element={<Introduction />} />
       <Route path="/about" element={<About />} />
       <Route path="/detection" element={<Detection />} />
-      <Route path="/auth" element={<Auth />} />
+      <Route path="/auth" element={<AuthForm />} />
     </Route>
   )
 );

@@ -5,7 +5,57 @@
   margin-top: 100px;
   width: 800px;
   padding: 50px;
-  color: black;
+}
+
+.form {
+  max-width: 40rem;
+  margin: 2rem auto;
+}
+
+.form label,
+.form input,
+.form textarea {
+  display: block;
+  width: 16.5rem;
+}
+
+.form input,
+.form textarea {
+  font: inherit;
+  padding: 0.25rem;
+}
+
+.actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+}
+
+.actions button {
+  font: inherit;
+  cursor: pointer;
+  padding: 0.5rem 1.5rem;
+  border-radius: 4px;
+  background-color: rgb(207, 207, 207);
+  color: rgb(0, 0, 0);
+  border: none;
+}
+
+.actions a {
+  text-decoration: none;
+  padding: 0.5rem 1.5rem;
+  border-radius: 4px;
+  background-color: rgb(207, 207, 207);
+  color: rgb(0, 0, 0);
+}
+
+.actions button:hover {
+  background-color: rgb(191, 191, 191);
+}
+
+.actions a:hover {
+  background-color: rgb(191, 191, 191);
 }
 
 @media (max-width: 830px) {
