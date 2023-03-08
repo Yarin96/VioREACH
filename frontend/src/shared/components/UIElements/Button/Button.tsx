@@ -3,9 +3,11 @@ import "./Button.css";
 
 const Button = (props: any) => {
   return (
-    <div className="container">
-      <button className="button" onClick={props.onClick}>
-        Click me to scan a video from Instagram account!
+    <div>
+      <button className="button-82-pushable" onClick={props.onClick}>
+        <span className="button-82-shadow"></span>
+        <span className="button-82-edge"></span>
+        <span className="button-82-front text">Start Scanning...</span>
       </button>
     </div>
   );

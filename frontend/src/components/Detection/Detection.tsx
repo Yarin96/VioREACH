@@ -56,15 +56,14 @@ const Detection: React.FC = () => {
   };
 
   return (
-    <>
+    <div className="container">
+      <h2>The Violence Detection Scanner!</h2>
       <h3>
-        The Violence Detection Scanner <br />
         Click the button to start scanning your social media account using our
         algorithm.
       </h3>
-
       <Button onClick={clickHandler} />
-    </>
+    </div>
   );
 };
 

@@ -5,9 +5,10 @@ html {
 
 body {
   margin: 0;
+  overflow-x: hidden;
 }
 
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 1px;
   background-color: transparent;
 }
