@@ -1,10 +1,6 @@
 .container {
   text-align: center;
-  margin-right: auto;
-  margin-left: auto;
-  margin-top: 100px;
-  width: 800px;
-  padding: 50px;
+  margin-top: 10px;
 }
 
 /* Form styling */
@@ -12,13 +8,19 @@
 .form {
   max-width: 40rem;
   margin: 2rem auto;
+  border-style: solid;
+  border-color: rgb(0, 0, 0);
+  border-radius: 0.5rem;
+  padding: 20px 15px 40px 15px;
+  border-width: 1px;
+  outline: 4px solid #e3e3e3;
 }
 
 .form label,
 .form input,
 .form textarea {
   display: block;
-  width: 16.5rem;
+  width: 16.9rem;
 }
 
 .form input,
@@ -60,8 +62,13 @@
   background-color: rgb(191, 191, 191);
 }
 
+.e-list {
+  list-style-type: none;
+  padding-left: 40px;
+}
+
 @media (max-width: 830px) {
   .container {
-    max-width: 80vw;
+    text-align: center;
   }
 }

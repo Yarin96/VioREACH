@@ -1,6 +1,8 @@
 const HttpError = require("../models/http-error");
 const { validationResult } = require("express-validator");
 const User = require("../models/user");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 const getUsers = async (req, res, next) => {
   let users;
@@ -46,11 +48,21 @@ const signup = async (req, res, next) => {
     return next(errorThrown);
   }
 
+  let hashedPassword;
+  try {
+    hashedPassword = await bcrypt.hash(password, 12); // password + salt
+  } catch (error) {
+    const errorThrown = new HttpError(
+      "Couldn't create user, please try again.",
+      500
+    );
+    return next(errorThrown);
+  }
+
   const createdUser = new User({
     name,
     email,
-    password,
-    expenses: [],
+    password: hashedPassword,
   });
 
   try {
@@ -63,7 +75,24 @@ const signup = async (req, res, next) => {
     return next(errorThrown);
   }
 
-  res.status(201).json({ user: createdUser.toObject({ getters: true }) });
+  let token;
+  try {
+    token = jwt.sign(
+      { userId: createdUser.id, email: createdUser.email },
+      "s4cr3tVioL4nc34pp",
+      { expiresIn: "0.5h" }
+    );
+  } catch (error) {
+    const errorThrown = new HttpError(
+      "Signing up failed, please try again.",
+      500
+    );
+    return next(errorThrown);
+  }
+
+  res
+    .status(201)
+    .json({ userId: createdUser.id, email: createdUser.email, token: token });
 };
 
 const login = async (req, res, next) => {
@@ -80,7 +109,7 @@ const login = async (req, res, next) => {
     return next(errorThrown);
   }
 
-  if (!existingUser || existingUser.password !== password) {
+  if (!existingUser) {
     const errorThrown = new HttpError(
       "Invalid credentials, could not log you in.",
       401
@@ -88,9 +117,45 @@ const login = async (req, res, next) => {
     return next(errorThrown);
   }
 
+  let isValidPassword = false;
+  try {
+    isValidPassword = await bcrypt.compare(password, existingUser.password);
+  } catch (error) {
+    const errorThrown = new HttpError(
+      "Couldn't log you in, please check your credentials and try again.",
+      500
+    );
+    return next(errorThrown);
+  }
+
+  if (!isValidPassword) {
+    const errorThrown = new HttpError(
+      "Couldn't log you in, please check your credentials and try again.",
+      500
+    );
+    return next(errorThrown);
+  }
+
+  let token;
+  try {
+    token = jwt.sign(
+      { userId: existingUser.id, email: existingUser.email },
+      "s4cr3tVioL4nc34pp",
+      { expiresIn: "0.5h" }
+    );
+  } catch (error) {
+    const errorThrown = new HttpError(
+      "Logging in failed, please try again.",
+      500
+    );
+    return next(errorThrown);
+  }
+
   res.json({
     message: "Logged in!",
-    user: existingUser.toObject({ getters: true }),
+    userId: existingUser.id,
+    email: existingUser.email,
+    token: token,
   });
 };
 

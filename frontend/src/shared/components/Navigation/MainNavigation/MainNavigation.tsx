@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import MainHeader from "../MainHeader/MainHeader";
 import NavLinks from "../NavLinks/NavLinks";
 import SideDrawer from "../SideDrawer/SideDrawer";
@@ -28,12 +28,7 @@ const MainNavigation = () => {
       </SideDrawer>
       <MainHeader>
         <Link to="/">
-          <img
-            src="/assets/images/logo.png"
-            alt="logo"
-            width={265}
-            height={60}
-          />
+          <img className="logo" src="/assets/images/logo.png" alt="logo" />
         </Link>
         <nav className="links">
           <NavLinks />
