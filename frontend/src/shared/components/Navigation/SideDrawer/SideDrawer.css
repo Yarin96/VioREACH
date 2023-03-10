@@ -1,10 +1,28 @@
 .side_drawer {
   position: fixed;
-  left: 0;
+  left: 0%;
   top: 0;
-  z-index: 100;
+  z-index: 10;
   height: 100vh;
-  width: 70%;
+  width: 40%;
   background: white;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
+}
+
+.slide-in-left-enter {
+  left: -40%;
+}
+
+.slide-in-left-enter-active {
+  left: 0%;
+  transition: 300ms;
+}
+
+.slide-in-left-exit {
+  left: 0%;
+}
+
+.slide-in-left-exit-active {
+  left: -40%;
+  transition: 300ms;
 }
