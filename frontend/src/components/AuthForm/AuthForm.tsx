@@ -16,16 +16,23 @@ export async function action({ request }: { request: any }) {
   }
 
   const data = await request.formData();
-  const authData = {
-    email: data.get("email"),
-    password: data.get("password"),
-  };
 
-  const response = await fetch("http://localhost:5000/" + mode, {
+  let authData;
+  if (mode === "signup") {
+    authData = {
+      name: data.get("name"),
+      email: data.get("email"),
+      password: data.get("password"),
+    };
+  } else {
+    authData = {
+      email: data.get("email"),
+      password: data.get("password"),
+    };
+  }
+
+  const response = await fetch("http://localhost:8080/", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
     body: JSON.stringify(authData),
   });
 

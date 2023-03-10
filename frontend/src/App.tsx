@@ -13,11 +13,11 @@ import About from "./components/About/About";
 import Detection from "./components/Detection/Detection";
 import AuthForm, { action as authAction } from "./components/AuthForm/AuthForm";
 import { AuthContext } from "./shared/context/auth-context";
+import Error from "./shared/components/Error/Error";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    /// Add: errorElement={} as props to Route
-    <Route path="/" element={<RootLayout />}>
+    <Route path="/" element={<RootLayout />} errorElement={<Error />}>
       <Route index element={<Introduction />} />
       <Route path="/about" element={<About />} />
       <Route path="/detection" element={<Detection />} />

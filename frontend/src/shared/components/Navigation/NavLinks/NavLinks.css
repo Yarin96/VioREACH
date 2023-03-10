@@ -26,8 +26,8 @@
 .nav_links a:active,
 .nav_links a.active {
   background: rgba(2, 68, 192, 0.192);
-  color: #ffffff;
-  border-radius: 15px;
+  color: white;
+  border-radius: 8px;
 }
 
 .nav_links button {

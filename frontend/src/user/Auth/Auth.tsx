@@ -6,7 +6,7 @@ import {
   useNavigation,
 } from "react-router-dom";
 import "./Auth.css";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import Loader from "../../shared/components/UIElements/Loader/Loader";
 import { AuthContext } from "../../shared/context/auth-context";
 
@@ -15,7 +15,7 @@ function Auth() {
   const navigation: any = useNavigation();
   const [searchParams] = useSearchParams();
   const authContext = useContext(AuthContext);
-  const [isLoading, setIsLoading] = useState(false);
+
   const isLogin = searchParams.get("mode") === "login";
   const isSubmitting = navigation.state === "submitting";
 
@@ -33,14 +33,34 @@ function Auth() {
           )}
           {data && data.message && <p>{data.message}</p>}
           {!data && authContext.login}
-          <p>
-            <label htmlFor="email">Email</label>
-            <input id="email" type="email" name="email" />
-          </p>
-          <p>
-            <label htmlFor="image">Password</label>
-            <input id="password" type="password" name="password" />
-          </p>
+          {isLogin ? (
+            <>
+              <p>
+                <label htmlFor="email">Email</label>
+                <input id="email" type="email" name="email" required />
+              </p>
+              <p>
+                <label htmlFor="image">Password</label>
+                <input id="password" type="password" name="password" required />
+              </p>
+            </>
+          ) : (
+            <>
+              <p>
+                <label htmlFor="email">Full Name</label>
+                <input id="name" type="text" name="name" required />
+              </p>
+              <p>
+                <label htmlFor="email">Email</label>
+                <input id="email" type="email" name="email" required />
+              </p>
+              <p>
+                <label htmlFor="image">Password</label>
+                <input id="password" type="password" name="password" required />
+              </p>
+            </>
+          )}
+
           <div className="actions">
             <Link to={`?mode=${isLogin ? "signup" : "login"}`}>
               {isLogin ? "New Account" : "Login"}
@@ -49,7 +69,7 @@ function Auth() {
               isLogin ? "Enter" : "Save"
             }`}</button>
           </div>
-          {isLoading && <Loader />}
+          {isSubmitting && <Loader />}
         </Form>
       </div>
     </>
