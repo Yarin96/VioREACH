@@ -8,6 +8,30 @@ body {
   overflow-x: hidden;
 }
 
+main {
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  margin-right: auto;
+  margin-left: auto;
+  margin-top: 100px;
+  width: 800px;
+  padding: 50px;
+  color: black;
+  display: flex;
+  flex-direction: column;
+}
+
+main .container {
+  width: 320px;
+}
+
+@media (max-width: 830px) {
+  main {
+    max-width: 80vw;
+  }
+}
+
 ::-webkit-scrollbar {
   width: 1px;
   background-color: transparent;

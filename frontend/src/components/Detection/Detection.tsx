@@ -56,7 +56,7 @@ const Detection: React.FC = () => {
   };
 
   return (
-    <div className="container">
+    <div>
       <h2>The Violence Detection Scanner!</h2>
       <h3>
         Click the button to start scanning your social media account using our

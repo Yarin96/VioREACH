@@ -3,7 +3,7 @@ import "./Introduction.css";
 
 const Introduction = () => {
   return (
-    <div className="container">
+    <div>
       <p>
         Introduction - Lorem ipsum dolor sit amet consectetur adipisicing elit.
         Maxime mollitia, molestiae quas vel sint commodi repudiandae
