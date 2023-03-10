@@ -26,3 +26,9 @@
   left: -40%;
   transition: 300ms;
 }
+
+@media (min-width: 768px) {
+  .side_drawer {
+    display: none;
+  }
+}
