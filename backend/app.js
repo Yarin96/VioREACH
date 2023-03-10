@@ -19,7 +19,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use("/auth", usersRoutes);
+app.use("/auth?mode=", usersRoutes);
 app.use("/detection", detectionRoutes);
 
 app.use((req, res, next) => {
@@ -39,10 +39,10 @@ app.use((error, req, res, next) => {
 
 mongoose
   .connect(
-    "mongodb+srv://ExpensesDB:OFK095MCpd0$@cluster0.vidoh7c.mongodb.net/MERN?retryWrites=true&w=majority"
+    "mongodb+srv://VioREACH:OFK095MCpd0@cluster0.vidoh7c.mongodb.net/users?retryWrites=true&w=majority"
   )
   .then(() => {
-    app.listen(5000);
+    app.listen(8080);
   })
   .catch((error) => {
     console.log(error);
