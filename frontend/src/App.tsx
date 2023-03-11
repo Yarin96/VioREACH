@@ -11,7 +11,7 @@ import RootLayout from "./shared/components/RootLayout/RootLayout";
 import Introduction from "./components/Introduction/Introduction";
 import About from "./components/About/About";
 import Detection from "./components/Detection/Detection";
-import AuthForm, { action as authAction } from "./components/AuthForm/AuthForm";
+import AuthPage, { action as authAction } from "./components/AuthPage/AuthPage";
 import { AuthContext } from "./shared/context/auth-context";
 import Error from "./shared/components/Error/Error";
 
@@ -21,7 +21,7 @@ const router = createBrowserRouter(
       <Route index element={<Introduction />} />
       <Route path="/about" element={<About />} />
       <Route path="/detection" element={<Detection />} />
-      <Route path="/auth" element={<AuthForm />} action={authAction} />
+      <Route path="/auth" element={<AuthPage />} action={authAction} />
     </Route>
   )
 );

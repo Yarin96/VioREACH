@@ -5,7 +5,7 @@ import {
   useActionData,
   useNavigation,
 } from "react-router-dom";
-import "./Auth.css";
+import "./AuthForm.css";
 import { useContext } from "react";
 import Loader from "../../shared/components/UIElements/Loader/Loader";
 import { AuthContext } from "../../shared/context/auth-context";
@@ -32,7 +32,7 @@ function Auth() {
             </ul>
           )}
           {data && data.message && <p>{data.message}</p>}
-          {!data && authContext.login}
+          {/* {!data && authContext.login} */}
           {isLogin ? (
             <>
               <p>
@@ -65,7 +65,7 @@ function Auth() {
             <Link to={`?mode=${isLogin ? "signup" : "login"}`}>
               {isLogin ? "New Account" : "Login"}
             </Link>
-            <button disabled={isSubmitting}>{`${
+            <button type="submit" disabled={isSubmitting}>{`${
               isLogin ? "Enter" : "Save"
             }`}</button>
           </div>
