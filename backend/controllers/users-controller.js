@@ -80,7 +80,7 @@ const signup = async (req, res, next) => {
     token = jwt.sign(
       { userId: createdUser.id, email: createdUser.email },
       "s4cr3tVioL4nc34pp",
-      { expiresIn: "0.5h" }
+      { expiresIn: "1h" }
     );
   } catch (error) {
     const errorThrown = new HttpError(
@@ -141,7 +141,7 @@ const login = async (req, res, next) => {
     token = jwt.sign(
       { userId: existingUser.id, email: existingUser.email },
       "s4cr3tVioL4nc34pp",
-      { expiresIn: "0.5h" }
+      { expiresIn: "1h" }
     );
   } catch (error) {
     const errorThrown = new HttpError(

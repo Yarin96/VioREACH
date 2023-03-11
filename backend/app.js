@@ -19,7 +19,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use("/auth?mode=", usersRoutes);
+app.use("/auth", usersRoutes);
 app.use("/detection", detectionRoutes);
 
 app.use((req, res, next) => {
