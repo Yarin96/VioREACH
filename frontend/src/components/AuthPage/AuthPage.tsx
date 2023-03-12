@@ -10,7 +10,6 @@ export default AuthPage;
 export async function action({ request }: { request: any }) {
   const searchParams = new URL(request.url).searchParams;
   const mode = searchParams.get("mode") || "login";
-  console.log(mode);
 
   if (mode !== "login" && mode !== "signup") {
     throw json({ message: "Unsupported mode." }, { status: 422 });

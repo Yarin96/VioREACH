@@ -62,7 +62,7 @@ const Detection: React.FC = () => {
         Click the button to start scanning your social media account using our
         algorithm.
       </h3>
-      <Button onClick={clickHandler} />
+      <Button text="Start Scanning..." onClick={clickHandler} />
     </div>
   );
 };

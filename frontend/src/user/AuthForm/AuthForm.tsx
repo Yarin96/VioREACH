@@ -9,6 +9,7 @@ import "./AuthForm.css";
 import { useContext } from "react";
 import Loader from "../../shared/components/UIElements/Loader/Loader";
 import { AuthContext } from "../../shared/context/auth-context";
+import ErrorModal from "../../shared/components/UIElements/ErrorModal/ErrorModal";
 
 function Auth() {
   const data: any = useActionData();
@@ -16,23 +17,18 @@ function Auth() {
   const [searchParams] = useSearchParams();
   const authContext = useContext(AuthContext);
 
+  console.log(data, "check");
+
   const isLogin = searchParams.get("mode") === "login";
   const isSubmitting = navigation.state === "submitting";
 
   return (
     <>
       <div className="container">
+        {/* <ErrorModal data={data} /> */}
         <Form method="post" className="form">
           <h1>{isLogin ? "Login" : "Sign Up"}</h1>
-          {data && data.errors && (
-            <ul className="e-list">
-              {Object.values(data.errors).map((error: any) => (
-                <li key={error}>{error}</li>
-              ))}
-            </ul>
-          )}
           {data && data.message && <p>{data.message}</p>}
-          {/* {!data && authContext.login} */}
           {isLogin ? (
             <>
               <p>

@@ -7,7 +7,7 @@ const Button = (props: any) => {
       <button className="button-82-pushable" onClick={props.onClick}>
         <span className="button-82-shadow"></span>
         <span className="button-82-edge"></span>
-        <span className="button-82-front text">Start Scanning...</span>
+        <span className="button-82-front text">{props.text}</span>
       </button>
     </div>
   );

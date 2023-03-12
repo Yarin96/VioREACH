@@ -1,16 +1,27 @@
+import { useState } from "react";
 import Modal from "../Modal/Modal";
 import Button from "../Button/Button";
 
 const ErrorModal = (props: any) => {
+  const [show, setShow] = useState(true);
+
+  const clearModal = () => {
+    setShow(false);
+  };
+
   return (
-    <Modal
-      onCancel={props.onClear}
-      header="An Error Occurred!"
-      show={!!props.error}
-      footer={<Button onClick={props.onClear}>Okay</Button>}
-    >
-      <p>{props.error}</p>
-    </Modal>
+    <>
+      {show && props.data && props.data.message && (
+        <Modal
+          onCancel={clearModal}
+          header="An Error Occurred!"
+          show={!!props.data.message}
+          footer={<Button text="Okay" onClick={clearModal} />}
+        >
+          <p>{props.data.message}</p>
+        </Modal>
+      )}
+    </>
   );
 };
 
