@@ -9,14 +9,19 @@
   padding: 20px 15px 40px 15px;
   border-width: 1px;
   outline: 4px solid #e3e3e3;
-  background-color: var(--bg);
+  background-color: var(--orange);
+}
+
+.form input {
+  width: 17rem;
 }
 
 .form label,
-.form input,
 .form textarea {
   display: block;
-  width: 16.9rem;
+  font-weight: bolder;
+  justify-content: center;
+  align-items: center;
 }
 
 .form input,
@@ -39,7 +44,8 @@
   border-radius: 4px;
   background-color: rgb(207, 207, 207);
   color: rgb(0, 0, 0);
-  border: none;
+  border: 1px solid black;
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
 }
 
 .actions a {
@@ -48,14 +54,16 @@
   border-radius: 4px;
   background-color: rgb(207, 207, 207);
   color: rgb(0, 0, 0);
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+  border: 1px solid black;
 }
 
 .actions button:hover {
-  background-color: rgb(191, 191, 191);
+  background-color: rgb(235, 235, 235);
 }
 
 .actions a:hover {
-  background-color: rgb(191, 191, 191);
+  background-color: rgb(235, 235, 235);
 }
 
 .e-list {

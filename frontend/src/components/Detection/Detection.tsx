@@ -17,6 +17,9 @@ const Detection: React.FC = () => {
 
   const sendDataToServer = async (videos: any) => {
     try {
+      // Need to add auth token in here with:
+      // 'Authentication': 'Bearer' + token
+      // In the headers section
       const response: any = await axios.post(
         "http://127.0.0.1:5000/detect-video",
         {

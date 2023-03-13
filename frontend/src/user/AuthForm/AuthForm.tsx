@@ -6,9 +6,8 @@ import {
   useNavigation,
 } from "react-router-dom";
 import "./AuthForm.css";
-import { useContext, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Loader from "../../shared/components/UIElements/Loader/Loader";
-import { AuthContext } from "../../shared/context/auth-context";
 import ErrorModal from "../../shared/components/UIElements/ErrorModal/ErrorModal";
 
 const Auth = () => {
@@ -21,7 +20,6 @@ const Auth = () => {
 
   const navigation: any = useNavigation();
   const [searchParams] = useSearchParams();
-  const authContext = useContext(AuthContext);
 
   const isLogin = searchParams.get("mode") === "login";
   const isSubmitting = navigation.state === "submitting";

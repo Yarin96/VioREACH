@@ -1,12 +1,13 @@
 :root {
-  --blue: #0ab6ff;
+  --orange: #feb237;
   --white: #ffffff;
-  --bg: #d3d9ff8c;
+  --bg: #ffbc37;
 }
 
 html {
   font-family: sans-serif;
-  background-image: url("../public/assets/images/what-the-hex.png");
+  /* background-image: url("../public/assets/images/what-the-hex.png"); */
+  background-color: rgb(234, 234, 234);
 }
 
 body {
@@ -26,6 +27,9 @@ main {
   color: black;
   display: flex;
   flex-direction: column;
+  background-color: rgb(255, 250, 239);
+  border-radius: 5px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 main .container {

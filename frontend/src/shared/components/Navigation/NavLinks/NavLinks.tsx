@@ -1,38 +1,37 @@
-import { useContext } from "react";
 import "./NavLinks.css";
-import { NavLink } from "react-router-dom";
-import { AuthContext } from "../../../context/auth-context";
+import { Form, NavLink, useRouteLoaderData } from "react-router-dom";
 
-const NavLinks = (props: any) => {
-  const authContext = useContext(AuthContext);
+const NavLinks = () => {
+  const token = useRouteLoaderData("root");
+  console.log(token);
 
   return (
     <ul className="nav_links">
-      {!authContext.isLoggedIn && (
-        <>
-          <li>
-            <NavLink to="/">HOME</NavLink>
-          </li>
-          <li>
-            <NavLink to="/about">ABOUT</NavLink>
-          </li>
-        </>
-      )}
-      {authContext.isLoggedIn && (
+      <>
         <li>
-          <NavLink to="/detection">DETECT VIOLENCE</NavLink>
+          <NavLink to="/">HOME</NavLink>
         </li>
-      )}
-      {authContext.isLoggedIn && (
-        <li onClick={authContext.logout}>
-          <NavLink to="/">LOG OUT</NavLink>
-        </li>
-      )}
-      {!authContext.isLoggedIn && (
         <li>
-          <NavLink to="/auth?mode=login">LOGIN</NavLink>
+          <NavLink to="/about">ABOUT</NavLink>
         </li>
-      )}
+        {token && (
+          <>
+            <li>
+              <NavLink to="/detection">DETECT VIOLENCE</NavLink>
+            </li>
+            <li>
+              <Form action="/logout" method="post">
+                <button>LOGOUT</button>
+              </Form>
+            </li>
+          </>
+        )}
+        {!token && (
+          <li>
+            <NavLink to="/auth?mode=login">LOGIN</NavLink>
+          </li>
+        )}
+      </>
     </ul>
   );
 };

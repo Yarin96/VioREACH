@@ -28,7 +28,6 @@ const ModalOverlay = (props: any) => {
 };
 
 const Modal = (props: any) => {
-  console.log(props);
   return (
     <>
       {props.show && <Backdrop onClick={props.onCancel} />}

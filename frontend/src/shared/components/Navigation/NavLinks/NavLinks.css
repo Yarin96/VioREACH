@@ -67,11 +67,13 @@
     border: 1px solid white;
     color: white;
     background: transparent;
+    border-radius: 5px;
   }
 
   .nav_links button:hover,
   .nav_links button:active {
-    background: #f8df00;
+    background: #ffffff;
     color: #292929;
+    border-radius: 5px;
   }
 }
