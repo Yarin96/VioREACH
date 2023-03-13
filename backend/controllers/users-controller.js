@@ -10,7 +10,7 @@ const getUsers = async (req, res, next) => {
     users = await User.find({}, "-password");
   } catch (error) {
     const errorThrown = new HttpError(
-      "Fetching users failed, please try again later",
+      "Fetching users failed, please try again later.",
       500
     );
     return next(errorThrown);
@@ -34,7 +34,7 @@ const signup = async (req, res, next) => {
     existingUser = await User.findOne({ email: email });
   } catch (error) {
     const errorThrown = new HttpError(
-      "Signing up failed, please try again later",
+      "Signing up failed, please try again later.",
       500
     );
     return next(errorThrown);
@@ -42,7 +42,7 @@ const signup = async (req, res, next) => {
 
   if (existingUser) {
     const errorThrown = new HttpError(
-      "User exists already, please login instead",
+      "User exists already, please login instead.",
       422
     );
     return next(errorThrown);
@@ -103,7 +103,7 @@ const login = async (req, res, next) => {
     existingUser = await User.findOne({ email: email });
   } catch (error) {
     const errorThrown = new HttpError(
-      "Logging in failed, please try again later",
+      "Logging in failed, please try again later.",
       500
     );
     return next(errorThrown);

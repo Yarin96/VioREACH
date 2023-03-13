@@ -15,7 +15,6 @@ router.post(
   ],
   (req, res, next) => {
     const mode = req.body.mode;
-    console.log(mode, "tell me whyy");
     if (mode === "signup") {
       usersController.signup(req, res, next);
     } else if (mode === "login") {
