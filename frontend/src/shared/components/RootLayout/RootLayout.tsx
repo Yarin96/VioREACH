@@ -4,12 +4,12 @@ import MainNavigation from "../Navigation/MainNavigation/MainNavigation";
 
 const RootLayout: React.FC = () => {
   return (
-    <>
+    <div>
       <MainNavigation />
       <main>
         <Outlet />
       </main>
-    </>
+    </div>
   );
 };
 

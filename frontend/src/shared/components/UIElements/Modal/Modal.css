@@ -4,28 +4,39 @@
   top: 22vh;
   left: 10%;
   width: 80%;
-  background: white;
+  background: var(--white);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
-  border-radius: 8px;
+  border-radius: 12px;
 }
 
 .modal__header {
-  width: 100%;
-  padding: 1rem 0.5rem;
-  background: blue;
-  color: white;
+  padding: 10px 10px 10px 10px;
+  background: var(--blue);
+  color: var(--white);
 }
 
 .modal__header h2 {
-  margin: 0.5rem;
+  text-align: center;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .modal__content {
   padding: 1rem 0.5rem;
 }
 
+.modal__content p {
+  text-align: center;
+  font-weight: bold;
+}
+
 .modal__footer {
   padding: 1rem 0.5rem;
+  margin-top: -50px;
+}
+
+.modal__footer div {
+  text-align: center;
 }
 
 @media (min-width: 768px) {

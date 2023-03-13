@@ -4,13 +4,13 @@
   padding: 0px 5px 0px 5px;
   display: flex;
   align-items: center;
-  background-color: #0ab6ff;
+  background-color: var(--blue);
   border-bottom: 1px solid black;
   justify-content: space-between;
 }
 
 .header h1 {
-  color: white;
+  color: var(--white);
 }
 
 .header ul {

@@ -39,7 +39,11 @@ export async function action({ request }: { request: any }) {
     body: JSON.stringify(authData),
   });
 
-  if (response.status === 422 || response.status === 401) {
+  if (
+    response.status === 422 ||
+    response.status === 401 ||
+    response.status === 500
+  ) {
     return response;
   }
 

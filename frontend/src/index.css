@@ -1,3 +1,9 @@
+:root {
+  --blue: #0ab6ff;
+  --white: #ffffff;
+  --bg: #d3d9ff8c;
+}
+
 html {
   font-family: sans-serif;
   background-image: url("../public/assets/images/what-the-hex.png");

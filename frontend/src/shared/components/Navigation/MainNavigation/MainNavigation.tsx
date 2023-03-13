@@ -19,7 +19,7 @@ const MainNavigation = () => {
   };
 
   return (
-    <>
+    <div>
       {drawerIsOpen && <Backdrop onClick={closeDrawerHandler} />}
       <SideDrawer show={drawerIsOpen} onClick={closeDrawerHandler}>
         <nav className="drawer_navigation">
@@ -37,7 +37,7 @@ const MainNavigation = () => {
           <FiMenu />
         </button>
       </MainHeader>
-    </>
+    </div>
   );
 };
 

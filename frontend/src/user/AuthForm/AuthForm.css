@@ -9,6 +9,7 @@
   padding: 20px 15px 40px 15px;
   border-width: 1px;
   outline: 4px solid #e3e3e3;
+  background-color: var(--bg);
 }
 
 .form label,
