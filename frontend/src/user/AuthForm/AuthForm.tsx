@@ -26,9 +26,6 @@ const Auth = () => {
   const isLogin = searchParams.get("mode") === "login";
   const isSubmitting = navigation.state === "submitting";
 
-  console.log("data:", data);
-  console.log("error:", error);
-
   const clearErrorHandler = () => {
     setError(undefined);
   };
