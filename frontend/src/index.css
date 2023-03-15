@@ -16,6 +16,11 @@ body {
   overflow-x: hidden;
 }
 
+#tsparticles {
+  position: relative;
+  z-index: -10;
+}
+
 main {
   text-align: center;
   justify-content: center;

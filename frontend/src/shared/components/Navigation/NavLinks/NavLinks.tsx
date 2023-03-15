@@ -3,7 +3,6 @@ import { Form, NavLink, useRouteLoaderData } from "react-router-dom";
 
 const NavLinks = () => {
   const token = useRouteLoaderData("root");
-  console.log(token);
 
   return (
     <ul className="nav_links">
