@@ -34,10 +34,10 @@
   border-radius: 12px;
   background: linear-gradient(
     to left,
-    hsl(232, 100%, 21%) 0%,
-    hsl(247, 100%, 32%) 8%,
-    hsl(247, 100%, 32%) 8%,
-    hsl(232, 100%, 21%) 0%
+    hsl(32, 100%, 21%) 0%,
+    hsl(38, 100%, 32%) 8%,
+    hsl(38, 100%, 32%) 8%,
+    hsl(32, 100%, 21%) 0%
   );
 }
 
@@ -47,8 +47,8 @@
   padding: 12px 27px;
   border-radius: 12px;
   font-size: 1.1rem;
-  color: white;
-  background: hsl(212, 100%, 47%);
+  color: rgb(0, 0, 0);
+  background: var(--bg);
   will-change: transform;
   transform: translateY(-4px);
   transition: transform 600ms cubic-bezier(0.3, 0.7, 0.4, 1);

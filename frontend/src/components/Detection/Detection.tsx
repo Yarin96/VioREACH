@@ -7,8 +7,7 @@ const Detection: React.FC = () => {
   const [result, setResult] = useState(null);
 
   // API set essential parameters
-  const accessToken =
-    "IGQVJVT3BGX3ZA6bU02ZAEMxajIxTlhUSDFwSEZAOU3RvaFlwN3VVVk9ZAOGdJc0YzbXVjMVRkVVJKS1Fva1RpN2hwUDZAXV3d4VkEtNE9CZAmxIZATBZATmhhY29hT2tJdXpqWHp5MWdpQ3A5T0RsTGRCMmIyQwZDZD";
+  const accessToken = process.env.INSTAGRAM_API_KEY;
   const url = "https://graph.instagram.com/me/media";
   const params = {
     fields: "id,caption,media_type,media_url,thumbnail_url",
@@ -65,7 +64,7 @@ const Detection: React.FC = () => {
         Click the button to start scanning your social media account using our
         algorithm.
       </h3>
-      <Button text="Start Scanning..." onClick={clickHandler} />
+      <Button text="Start Scanning" onClick={clickHandler} />
     </div>
   );
 };
