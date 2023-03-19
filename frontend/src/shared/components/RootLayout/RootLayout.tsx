@@ -1,23 +1,23 @@
 import React, { useCallback } from "react";
 import { Outlet } from "react-router-dom";
 import MainNavigation from "../Navigation/MainNavigation/MainNavigation";
-import Particles from "react-tsparticles";
-import { loadFull } from "tsparticles";
+// import Particles from "react-tsparticles";
+// import { loadFull } from "tsparticles";
 
 const RootLayout: React.FC = () => {
-  const particlesInit = useCallback(async (engine: any) => {
-    await loadFull(engine);
-  }, []);
+  // const particlesInit = useCallback(async (engine: any) => {
+  //   await loadFull(engine);
+  // }, []);
 
-  const particlesLoaded = useCallback(async (engine: any) => {
-    await loadFull(engine);
-  }, []);
+  // const particlesLoaded = useCallback(async (engine: any) => {
+  //   await loadFull(engine);
+  // }, []);
 
   return (
     <div>
       <MainNavigation />
       <main>
-        <Particles
+        {/* <Particles
           id="tsparticles"
           init={particlesInit}
           loaded={particlesLoaded}
@@ -30,10 +30,10 @@ const RootLayout: React.FC = () => {
             fpsLimit: 120,
             interactivity: {
               events: {
-                // onClick: {
-                //   enable: true,
-                //   mode: "push",
-                // },
+                onClick: {
+                  enable: true,
+                  mode: "push",
+                },
                 onHover: {
                   enable: true,
                   mode: "repulse",
@@ -88,7 +88,7 @@ const RootLayout: React.FC = () => {
             },
             detectRetina: true,
           }}
-        />
+        /> */}
         <Outlet />
       </main>
     </div>

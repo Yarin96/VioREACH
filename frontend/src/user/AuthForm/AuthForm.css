@@ -1,5 +1,9 @@
 /* Form styling */
 
+.auth-container {
+  width: 100%;
+}
+
 .form {
   max-width: 40rem;
   margin: 2rem auto;
@@ -9,7 +13,7 @@
   padding: 20px 15px 40px 15px;
   border-width: 1px;
   outline: 4px solid #e3e3e3;
-  background-color: var(--orange);
+  background-color: var(--white);
 }
 
 .form input {

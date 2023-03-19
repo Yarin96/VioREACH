@@ -2,7 +2,7 @@ import "./About.css";
 
 const About = () => {
   return (
-    <div>
+    <div className="container">
       <p>
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime
         mollitia, molestiae quas vel sint commodi repudiandae consequuntur

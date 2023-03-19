@@ -1,9 +1,8 @@
-import React from "react";
 import "./Introduction.css";
 
 const Introduction = () => {
   return (
-    <div>
+    <div className="container">
       <p>
         Introduction - Lorem ipsum dolor sit amet consectetur adipisicing elit.
         Maxime mollitia, molestiae quas vel sint commodi repudiandae
