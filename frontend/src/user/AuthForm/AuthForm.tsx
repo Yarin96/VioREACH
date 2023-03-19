@@ -15,11 +15,31 @@ import {
   TextField,
   Button,
   Typography,
+  InputAdornment,
+  IconButton,
 } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
-import { AssignmentInd, Login } from "@mui/icons-material";
+import {
+  AssignmentInd,
+  Login,
+  Visibility,
+  VisibilityOff,
+} from "@mui/icons-material";
 
 const Auth = () => {
+  const [values, setValues] = useState({
+    email: "",
+    password: "",
+    showPass: false,
+  });
+
+  const passwordVisibilityHandler = () => {
+    setValues({
+      ...values,
+      showPass: !values.showPass,
+    });
+  };
+
   const [error, setError] = useState(undefined);
   const data: any = useActionData();
 
@@ -86,12 +106,29 @@ const Auth = () => {
                       <TextField
                         id="password"
                         name="password"
-                        type="password"
+                        type={values.showPass ? "text" : "password"}
                         fullWidth
                         label="Enter your password"
                         placeholder="Password"
                         variant="outlined"
                         required
+                        InputProps={{
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              <IconButton
+                                onClick={passwordVisibilityHandler}
+                                aria-label="toggle password"
+                                edge="end"
+                              >
+                                {values.showPass ? (
+                                  <VisibilityOff />
+                                ) : (
+                                  <Visibility />
+                                )}
+                              </IconButton>
+                            </InputAdornment>
+                          ),
+                        }}
                       ></TextField>
                     </Grid>
                   </Grid>
@@ -127,12 +164,29 @@ const Auth = () => {
                       <TextField
                         id="password"
                         name="password"
-                        type="password"
+                        type={values.showPass ? "text" : "password"}
                         fullWidth
                         label="Enter password (min. 8 characters)"
                         placeholder="Password"
                         variant="outlined"
                         required
+                        InputProps={{
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              <IconButton
+                                onClick={passwordVisibilityHandler}
+                                aria-label="toggle password"
+                                edge="end"
+                              >
+                                {values.showPass ? (
+                                  <VisibilityOff />
+                                ) : (
+                                  <Visibility />
+                                )}
+                              </IconButton>
+                            </InputAdornment>
+                          ),
+                        }}
                       ></TextField>
                     </Grid>
                   </Grid>
