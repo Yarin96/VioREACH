@@ -5,6 +5,11 @@ import torch.nn as nn
 import torchvision.models as models
 import os
 
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+from urllib.request import urlretrieve
+import subprocess
+
 
 # Function to extract frames
 def FrameCapture(path):
@@ -27,10 +32,9 @@ def FrameCapture(path):
 
         count += 1
 
-
-def define_yolov8_model():
+def define_yolov8_model(video_file):
     model = yolo("yolov8x.pt") # check the option to create my own yaml file to use my own model and not yolo8 prebuild model
-    model.predict("V_!.mp4", save=True, save_txt=True)
+    model.predict(video_file, save=True, save_txt=True)
 
 
 def get_frames_identify_vectors():
@@ -43,7 +47,7 @@ def get_frames_identify_vectors():
         if os.path.isfile(os.path.join(directory, path)):
             count += 1
     for file in range(1, count + 1):
-        currentFile = open(directory + "/V_1_" + str(file) + ".txt")
+        currentFile = open(directory + "/video_1_" + str(file) + ".txt")
         allFrames.append(currentFile.readlines())
     for frame in allFrames:
         print(frame)
@@ -92,7 +96,35 @@ def identify_classes(all_frames):
     """
 
 
+
+app = Flask(__name__)
+CORS(app, supports_credentials=True)
+
+# Videos API Route
+@app.route("/detection", methods=["POST"])
+def detect_video():
+    if request.method == 'POST':
+        data = request.get_json()
+        video_url = str(data.get('video_url'))
+
+        # Download the video from the URL and save it to a local file
+        video_file_path = os.path.join('D:/ViolenceDetectionProject/backend/detect-algorithm/video.mp4')
+        
+        urlretrieve(video_url, video_file_path)
+        define_yolov8_model(video_file_path)
+        get_frames_identify_vectors()
+
+        # script_path = os.path.join(os.path.dirname(__file__), video_file_path)
+        # violence_detections = subprocess.run(['python', 'detect.py', '--source', str(video_file_path)], stdout=subprocess.PIPE)
+
+        # return jsonify({'processed_output': violence_detections.stdout.decode()})
+    else:
+        raise 'Error'
+
 if __name__ == "__main__":
-    define_yolov8_model()
-    get_frames_identify_vectors()
+    app.run(port=5000)
+
+# if __name__ == "__main__":
+#     define_yolov8_model()
+#     get_frames_identify_vectors()
 

@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.use(checkAuth);
 
-router.get("/detection", (req, res, next) => {
+router.post("/detection", (req, res, next) => {
   res.send("Entered the detection page.");
 });
 
