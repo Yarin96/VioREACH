@@ -7,12 +7,11 @@ const Detection: React.FC = () => {
   const [result, setResult] = useState(null);
 
   // API set essential parameters
-  const accessToken = process.env.INSTAGRAM_API_KEY;
-  const url = "https://graph.instagram.com/me/media";
-  const params = {
-    fields: "id,caption,media_type,media_url,thumbnail_url",
-    access_token: accessToken,
-  };
+  const accessToken =
+    "IGQVJVZAFBtNktuWUdfbEpUb0h5alRPb3Y3V005YUFubmtFRmo5NWJnc1ZAkMGNEUU1ncXU2WGZACTDlacThxeGQzVVNmamh3aVV4S3E3OHh4MmZA2dkIzSGZAHQXB6amxtVkFGb0ExNGR2aDRERFV3RlZA6YwZDZD";
+  const fields = "id,caption,media_type,media_url,thumbnail_url";
+  console.log(accessToken);
+  const url = `https://graph.instagram.com/me/media?fields=${fields}&access_token=${accessToken}`;
 
   const sendDataToServer = async (videos: any) => {
     try {
@@ -20,7 +19,7 @@ const Detection: React.FC = () => {
       // 'Authentication': 'Bearer' + token
       // In the headers section
       const response: any = await axios.post(
-        "http://127.0.0.1:5000/detect-video",
+        "http://127.0.0.1:5000/detection",
         {
           video_url: videos[1],
         }
@@ -37,7 +36,7 @@ const Detection: React.FC = () => {
       const videosUrls = [];
 
       try {
-        const response = await axios.get(url, { params });
+        const response = await axios.get(url);
         const fetchedData = await response.data;
 
         for (const item of fetchedData.data) {
