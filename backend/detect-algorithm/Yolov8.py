@@ -12,9 +12,13 @@ import subprocess
 
 
 def first_time_setups():
-    """Run only if this is the first time on your machine"""
     os.mkdir("VideosFramesOutputs")
     os.mkdir("VideosPredictionsOutputs")
+
+
+def printing_objects(obj_list):
+    for obj in obj_list:
+        print(obj)
 
 
 def frame_capture(path):
@@ -48,7 +52,8 @@ def frame_capture(path):
 def define_and_predict_yolov8(videoToPredict):
     """ Define the model, predict and save the outcome into txt files given a video
     Calls the function to extract frames from the video"""
-    model = yolo("yolov8x.pt") # check the option to create my own yaml file to use my own model and not yolo8 prebuild model
+    model = yolo(
+        "yolov8x.pt")  # check the option to create my own yaml file to use my own model and not yolo8 prebuilt model
     model.to("cuda")
     frame_capture(videoToPredict)
     model.predict(videoToPredict, save=True, save_txt=True)
@@ -76,9 +81,15 @@ def get_frames_identify_vectors(videoFileName):
     for file in range(1, count + 1):
         currentFile = open(directory + videoFileName + "_" + str(file) + ".txt")
         framesDetectionVectors.append(currentFile.readlines())
-    # for frame in framesDetectionVectors:
-    #     print(frame)
+    # printing_objects(framesDetectionVectors)
     identify_classes(framesDetectionVectors, videoFileName)
+
+
+def show_boundingBox_image(img, top_left, bottom_right):
+    img2 = cv2.rectangle(img, top_left, bottom_right, (0, 255, 0), 5)
+    cv2.imshow("image", img2)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
 
 
 def identify_classes(processed_frames, videoFileName):
@@ -92,15 +103,18 @@ def identify_classes(processed_frames, videoFileName):
         for obj in frame:
             objClass = int(obj.split()[0])
             centerXcor, centerYcor, normalizedWidth, normalizedHeight = obj.split()[1:]
-            LocationOfObj.append([{objClass: names[objClass]}, {"centerXcor": float(centerXcor)}, {"centerYcor": float(centerYcor)}, {"normalizedWidth": float(normalizedWidth)}, {"normalizedHeight": float(normalizedHeight)}])
+            LocationOfObj.append([{objClass: names[objClass]},
+                                  {"centerXcor": float(centerXcor)},
+                                  {"centerYcor": float(centerYcor)},
+                                  {"normalizedWidth": float(normalizedWidth)},
+                                  {"normalizedHeight": float(normalizedHeight)}])
             objsInFrame.append({objClass: names[objClass]})
         foundClasses.append(objsInFrame)
         boundingBoxes.append(LocationOfObj)
         objsInFrame = []
         LocationOfObj = []
 
-    # for frame in boundingBoxes:
-    #     print(frame)
+    # printing_objects(boundingBoxes)
     real_bounding_boxes = []
     one_frame_objs = []
     for i, frame in enumerate(boundingBoxes):
@@ -113,26 +127,26 @@ def identify_classes(processed_frames, videoFileName):
             obj[2]["centerYcor"] *= height
             obj[3]["normalizedWidth"] *= width
             obj[4]["normalizedHeight"] *= height
-            top_left = (int(obj[1]["centerXcor"] - obj[3]["normalizedWidth"] / 2), int(obj[2]["centerYcor"] - obj[4]["normalizedHeight"] / 2))
-            bottom_right = (int(obj[1]["centerXcor"] + obj[3]["normalizedWidth"] / 2), int(obj[2]["centerYcor"] + obj[4]["normalizedHeight"] / 2))
+            top_left = (int(obj[1]["centerXcor"] - obj[3]["normalizedWidth"] / 2),
+                        int(obj[2]["centerYcor"] - obj[4]["normalizedHeight"] / 2))
+            bottom_right = (int(obj[1]["centerXcor"] + obj[3]["normalizedWidth"] / 2),
+                            int(obj[2]["centerYcor"] + obj[4]["normalizedHeight"] / 2))
             classDescription = list(obj[0].items())
             classDescription = classDescription[0]
-            classCodeInYamlFile = classDescription[0] # if ever needed when building own yaml file
-            one_frame_objs.append([{"class": classDescription[1]}, {"top_left": top_left}, {"bottom_right": bottom_right}])
-            # img2 = cv2.rectangle(img, top_left, bottom_right, (0, 255, 0), 5)
-            # cv2.imshow("image",img2)
-            # cv2.waitKey(0)
-            # cv2.destroyAllWindows()
+            classCodeInYamlFile = classDescription[0]  # if ever needed when building own yaml file
+            one_frame_objs.append(
+                [{"class": classDescription[1]}, {"top_left": top_left}, {"bottom_right": bottom_right}])
+
         real_bounding_boxes.append(one_frame_objs)
         one_frame_objs = []
 
-    for bound in real_bounding_boxes:
-        print(bound)
+    printing_objects(real_bounding_boxes)
 
 
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
+
 
 # Videos API Route
 @app.route("/detection", methods=["POST"])
