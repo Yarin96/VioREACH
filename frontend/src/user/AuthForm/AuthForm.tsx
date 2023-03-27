@@ -225,48 +225,6 @@ const Auth = () => {
           </Grid>
         </Container>
       </Form>
-      {/* <div className="container">
-        {error && <ErrorModal error={error} onClear={clearErrorHandler} />}
-        <Form method="post" className="form">
-          <h1>{isLogin ? "Login" : "Sign Up"}</h1>
-          {isLogin ? (
-            <>
-              <p>
-                <label htmlFor="email">Email</label>
-                <input id="email" type="email" name="email" required />
-              </p>
-              <p>
-                <label htmlFor="image">Password</label>
-                <input id="password" type="password" name="password" required />
-              </p>
-            </>
-          ) : (
-            <>
-              <p>
-                <label htmlFor="name">Full Name</label>
-                <input id="name" type="text" name="name" required />
-              </p>
-              <p>
-                <label htmlFor="email">Email</label>
-                <input id="email" type="email" name="email" required />
-              </p>
-              <p>
-                <label htmlFor="image">Password</label>
-                <input id="password" type="password" name="password" required />
-              </p>
-            </>
-          )}
-          <div className="actions">
-            <Link to={`?mode=${isLogin ? "signup" : "login"}`}>
-              {isLogin ? "New Account" : "Login"}
-            </Link>
-            <button type="submit" disabled={isSubmitting}>{`${
-              isLogin ? "Enter" : "Save"
-            }`}</button>
-          </div>
-          {isSubmitting && <Loader />}
-        </Form>
-      </div> */}
     </div>
   );
 };

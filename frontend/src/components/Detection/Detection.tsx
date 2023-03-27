@@ -6,22 +6,23 @@ import Button from "../../shared/components/UIElements/Button/Button";
 const Detection: React.FC = () => {
   const [result, setResult] = useState(null);
 
-  // API set essential parameters
-  const accessToken =
-    "IGQVJVZAFBtNktuWUdfbEpUb0h5alRPb3Y3V005YUFubmtFRmo5NWJnc1ZAkMGNEUU1ncXU2WGZACTDlacThxeGQzVVNmamh3aVV4S3E3OHh4MmZA2dkIzSGZAHQXB6amxtVkFGb0ExNGR2aDRERFV3RlZA6YwZDZD";
+  const accessToken = process.env.REACT_APP_INSTAGRAM_API_KEY;
   const fields = "id,caption,media_type,media_url,thumbnail_url";
   console.log(accessToken);
   const url = `https://graph.instagram.com/me/media?fields=${fields}&access_token=${accessToken}`;
 
   const sendDataToServer = async (videos: any) => {
     try {
-      // Need to add auth token in here with:
-      // 'Authentication': 'Bearer' + token
-      // In the headers section
+      const tempToken = localStorage.getItem("token");
       const response: any = await axios.post(
         "http://127.0.0.1:5000/detection",
         {
           video_url: videos[1],
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${tempToken}`,
+          },
         }
       );
 
