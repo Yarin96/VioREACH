@@ -20,7 +20,6 @@ app.use((req, res, next) => {
 });
 
 app.use("/auth", usersRoutes);
-// app.use("/detection", detectionRoutes); -->> This is handled by the Python app.py backend file.
 
 app.use((req, res, next) => {
   const error = new HttpError("Could not find this route.", 404);

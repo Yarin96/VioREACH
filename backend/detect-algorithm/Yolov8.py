@@ -5,10 +5,9 @@ import torch.nn as nn
 import torchvision.models as models
 import os
 
-from flask import Flask, request, jsonify
+from flask import Flask, request
 from flask_cors import CORS
 from urllib.request import urlretrieve
-import subprocess
 
 
 # Function to extract frames
@@ -113,18 +112,9 @@ def detect_video():
         urlretrieve(video_url, video_file_path)
         define_yolov8_model(video_file_path)
         get_frames_identify_vectors()
-
-        # script_path = os.path.join(os.path.dirname(__file__), video_file_path)
-        # violence_detections = subprocess.run(['python', 'detect.py', '--source', str(video_file_path)], stdout=subprocess.PIPE)
-
-        # return jsonify({'processed_output': violence_detections.stdout.decode()})
     else:
         raise 'Error'
 
 if __name__ == "__main__":
     app.run(port=5000)
-
-# if __name__ == "__main__":
-#     define_yolov8_model()
-#     get_frames_identify_vectors()
 
