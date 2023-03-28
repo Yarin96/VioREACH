@@ -25,3 +25,4 @@ yarn-error.log*
 .ds_store
 *.pt
 runs
+nodemon.json
