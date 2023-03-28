@@ -1,37 +1,53 @@
-import "./NavLinks.css";
+import { useState } from "react";
+import { Tab } from "@mui/material";
 import { Form, NavLink, useRouteLoaderData } from "react-router-dom";
+import { TabContext, TabList } from "@mui/lab";
+import "./NavLinks.css";
 
 const NavLinks = () => {
-  const token = useRouteLoaderData("root");
+  const token: any = useRouteLoaderData("root");
+  const [tabValue, setTabValue] = useState("1");
+
+  const handleTabChange = (event: React.SyntheticEvent, newValue: string) => {
+    setTabValue(newValue);
+  };
+
+  const resetTabValue = () => {
+    setTabValue("1");
+  };
 
   return (
-    <ul className="nav_links">
-      <>
-        <li>
-          <NavLink to="/">HOME</NavLink>
-        </li>
-        <li>
-          <NavLink to="/about">ABOUT</NavLink>
-        </li>
-        {token && (
-          <>
-            <li>
-              <NavLink to="/detection">DETECT VIOLENCE</NavLink>
-            </li>
-            <li>
-              <Form action="/logout" method="post">
-                <button>LOGOUT</button>
-              </Form>
-            </li>
-          </>
-        )}
-        {!token && (
-          <li>
-            <NavLink to="/auth?mode=login">LOGIN</NavLink>
-          </li>
-        )}
-      </>
-    </ul>
+    <>
+      <TabContext value={tabValue}>
+        <TabList onChange={handleTabChange} aria-label="Navigation Links">
+          <Tab label="HOME" component={NavLink} to="/" value="1" />
+          <Tab label="ABOUT" component={NavLink} to="/about" value="2" />
+          {token && (
+            <Tab
+              label="DETECTION"
+              component={NavLink}
+              to="/detection"
+              className="nav_links"
+              value="3"
+            />
+          )}
+          {!token && (
+            <Tab
+              label="LOGIN"
+              component={NavLink}
+              to="/auth?mode=login"
+              className="nav_links"
+              value="3"
+            />
+          )}
+        </TabList>
+      </TabContext>
+      {token && (
+        <Form action="/logout" method="post" className="nav_links">
+          <button onClick={resetTabValue}>LOGOUT</button>
+        </Form>
+      )}
+    </>
   );
 };
 

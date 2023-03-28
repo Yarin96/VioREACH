@@ -8,7 +8,6 @@ const Detection: React.FC = () => {
 
   const accessToken = process.env.REACT_APP_INSTAGRAM_API_KEY;
   const fields = "id,caption,media_type,media_url,thumbnail_url";
-  console.log(accessToken);
   const url = `https://graph.instagram.com/me/media?fields=${fields}&access_token=${accessToken}`;
 
   const sendDataToServer = async (videos: any) => {

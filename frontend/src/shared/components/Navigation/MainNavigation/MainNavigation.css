@@ -1,3 +1,7 @@
+a {
+  text-decoration: none;
+}
+
 .main_navigation_btn {
   width: 3rem;
   height: 3rem;
@@ -23,9 +27,9 @@
 }
 
 .logo {
-  width: 190px;
-  height: 43px;
+  font-size: 200%;
   padding-left: 15px;
+  padding-top: 5px;
 }
 
 @media (min-width: 768px) {
@@ -38,8 +42,8 @@
   }
 
   .logo {
-    width: 270px;
-    height: 60px;
+    font-size: 200%;
+    padding-left: 15px;
     padding-left: 15px;
   }
 }

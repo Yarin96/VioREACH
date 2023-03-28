@@ -1,11 +1,11 @@
+.nav_button {
+  margin-left: auto;
+}
 .nav_links {
   list-style: none;
-  margin-top: 250px;
   padding: 0;
-  width: 100%;
   height: 100%;
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
 }
@@ -15,25 +15,30 @@
 }
 
 .nav_links a {
+  padding: 0;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
   border: 1px solid transparent;
+  flex-direction: column;
+  display: flex;
   color: #000000;
   font-weight: bold;
   text-decoration: none;
-  padding: 0.5rem;
 }
 
 .nav_links a:hover,
 .nav_links a:active,
 .nav_links a.active {
   background: rgba(2, 68, 192, 0.192);
-  color: white;
+  color: rgb(105, 68, 255);
   border-radius: 8px;
 }
 
 .nav_links button {
   cursor: pointer;
   border: 1px solid #292929;
-  color: #292929;
+  color: rgb(105, 68, 255);
   background: transparent;
   padding: 0.5rem;
   font: inherit;
@@ -59,13 +64,14 @@
   }
 
   .nav_links a {
-    color: white;
+    color: rgb(0, 0, 0);
     text-decoration: none;
+    font-weight: bold;
   }
 
   .nav_links button {
     border: 1px solid white;
-    color: white;
+    color: rgb(0, 0, 0);
     background: transparent;
     border-radius: 5px;
   }
