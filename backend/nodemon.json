@@ -1,8 +1,0 @@
-{
-  "env": {
-    "DB_USER": "VioREACH",
-    "DB_PASSWORD": "OFK095MCpd0",
-    "DB_NAME": "users",
-    "JWT_KEY": "s4cr3tVioL4nc34pp"
-  }
-}
