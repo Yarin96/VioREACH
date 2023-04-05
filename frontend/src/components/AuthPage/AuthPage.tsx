@@ -58,5 +58,5 @@ export async function action({ request }: { request: any }) {
 
   localStorage.setItem("token", token);
 
-  return redirect("/");
+  return redirect("/detection");
 }

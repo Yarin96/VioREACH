@@ -1,9 +1,9 @@
 .nav_button {
   margin-left: auto;
 }
+
 .nav_links {
   list-style: none;
-  padding: 0;
   height: 100%;
   display: flex;
   justify-content: center;
@@ -38,7 +38,6 @@
 .nav_links button {
   cursor: pointer;
   border: 1px solid #292929;
-  color: rgb(105, 68, 255);
   background: transparent;
   padding: 0.5rem;
   font: inherit;
@@ -54,7 +53,7 @@
   color: rgb(0, 0, 0);
 }
 
-@media (min-width: 768px) {
+@media (min-width: 870px) {
   .nav_links {
     flex-direction: row;
   }
@@ -70,16 +69,24 @@
   }
 
   .nav_links button {
-    border: 1px solid white;
-    color: rgb(0, 0, 0);
     background: transparent;
-    border-radius: 5px;
+    padding: 6px 16px;
+    font-size: 0.875rem;
+    line-height: 1.75;
+    border-radius: 4px;
+    min-width: 64px;
+    margin: 4px 5px 5px 15px;
   }
 
   .nav_links button:hover,
   .nav_links button:active {
-    background: #ffffff;
-    color: #292929;
-    border-radius: 5px;
+    background-color: #1b7cdd;
+    color: #fff;
+    padding: 6px 16px;
+    font-size: 0.875rem;
+    line-height: 1.75;
+    border-radius: 4px;
+    min-width: 64px;
+    text-transform: uppercase;
   }
 }

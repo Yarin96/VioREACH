@@ -32,7 +32,7 @@ a {
   padding-top: 5px;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 870px) {
   .main_navigation_btn {
     display: none;
   }

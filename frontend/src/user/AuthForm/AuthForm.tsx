@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import {
   Form,
   Link,
@@ -5,9 +6,6 @@ import {
   useActionData,
   useNavigation,
 } from "react-router-dom";
-import "./AuthForm.css";
-import { useState, useEffect } from "react";
-import ErrorModal from "../../shared/components/UIElements/ErrorModal/ErrorModal";
 import {
   Container,
   Grid,
@@ -18,13 +16,15 @@ import {
   InputAdornment,
   IconButton,
 } from "@mui/material";
-import { LoadingButton } from "@mui/lab";
 import {
   AssignmentInd,
   Login,
   Visibility,
   VisibilityOff,
 } from "@mui/icons-material";
+import { LoadingButton } from "@mui/lab";
+import ErrorModal from "../../shared/components/UIElements/ErrorModal/ErrorModal";
+import "./AuthForm.css";
 
 const Auth = () => {
   const [values, setValues] = useState({
