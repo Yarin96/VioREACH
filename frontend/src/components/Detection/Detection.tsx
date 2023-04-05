@@ -1,9 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import axios from "axios";
 import "./Detection.css";
 import Button from "../../shared/components/UIElements/Button/Button";
+import Particles from "react-tsparticles";
+import { loadFull } from "tsparticles";
 
 const Detection: React.FC = () => {
+  const particlesInit = useCallback(async (engine: any) => {
+    await loadFull(engine);
+  }, []);
+
+  const particlesLoaded = useCallback(async (engine: any) => {
+    await loadFull(engine);
+  }, []);
+
   const [result, setResult] = useState(null);
 
   const accessToken = process.env.REACT_APP_INSTAGRAM_API_KEY;
@@ -64,6 +74,78 @@ const Detection: React.FC = () => {
         algorithm.
       </h3>
       <Button text="Start Scanning" onClick={clickHandler} />
+      <Particles
+        id="tsparticles"
+        init={particlesInit}
+        loaded={particlesLoaded}
+        options={{
+          background: {
+            color: {
+              value: "#E6E4E4",
+            },
+          },
+          fpsLimit: 120,
+          interactivity: {
+            events: {
+              // onClick: {
+              //   enable: true,
+              //   mode: "push",
+              // },
+              onHover: {
+                enable: true,
+                mode: "repulse",
+              },
+            },
+            mode: {
+              push: {
+                quantity: 4,
+              },
+              repulse: {
+                distance: 100,
+                duration: 0.4,
+              },
+            },
+          },
+          particles: {
+            color: {
+              value: "#00BFFF",
+            },
+            links: {
+              enable: true,
+              width: 1,
+              opacity: 1,
+              distance: 150,
+            },
+            move: {
+              enable: true,
+              direction: "none",
+              outModes: {
+                default: "bounce",
+              },
+              random: false,
+              speed: 2,
+              straight: false,
+            },
+            collisions: {
+              enable: true,
+            },
+            number: {
+              value: 15,
+              density: {
+                enable: true,
+                area: 800,
+              },
+            },
+            shape: {
+              type: "circle",
+            },
+            size: {
+              value: { min: 3, max: 3 },
+            },
+          },
+          detectRetina: true,
+        }}
+      />
     </div>
   );
 };

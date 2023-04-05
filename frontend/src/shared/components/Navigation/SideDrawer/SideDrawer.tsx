@@ -1,31 +1,49 @@
-import ReactDOM from "react-dom";
-import { CSSTransition } from "react-transition-group";
+import React, { useState } from "react";
+import { SwipeableDrawer, Button, Divider } from "@mui/material";
+import { FiMenu } from "react-icons/fi";
+import NavLinks from "../NavLinks/NavLinks";
 import "./SideDrawer.css";
 
-const SideDrawer = (props: any) => {
-  const content = (
-    <CSSTransition
-      in={props.show}
-      timeout={300}
-      classNames={{
-        enter: "slide-in-left-enter",
-        enterActive: "slide-in-left-enter-active",
-        exit: "slide-in-left-exit",
-        exitActive: "slide-in-left-exit-active",
-      }}
-      mountOnEnter
-      unmountOnExit
-    >
-      <aside className="side_drawer">
-        <div onClick={props.onClick}>{props.children}</div>
-      </aside>
-    </CSSTransition>
-  );
+type Anchor = "left";
 
-  return ReactDOM.createPortal(
-    content,
-    document.getElementById("drawer-hook")!
-  );
-};
+export default function SideDrawer() {
+  const [state, setState] = useState({
+    left: false,
+  });
 
-export default SideDrawer;
+  const toggleDrawer =
+    (anchor: Anchor, open: boolean) =>
+    (event: React.KeyboardEvent | React.MouseEvent) => {
+      if (
+        event &&
+        event.type === "keydown" &&
+        ((event as React.KeyboardEvent).key === "Tab" ||
+          (event as React.KeyboardEvent).key === "Shift")
+      ) {
+        return;
+      }
+
+      setState({ ...state, left: open });
+    };
+
+  return (
+    <div className="side_drawer">
+      <React.Fragment key={"left"}>
+        <Button onClick={toggleDrawer("left", true)}>
+          <FiMenu fontSize="2.2rem" />
+        </Button>
+        <SwipeableDrawer
+          anchor="left"
+          open={state["left"]}
+          onClose={toggleDrawer("left", false)}
+          onOpen={toggleDrawer("left", true)}
+        >
+          <div className="tabListContainer">
+            <NavLinks />
+            <Divider />
+          </div>
+        </SwipeableDrawer>
+      </React.Fragment>
+    </div>
+  );
+}

@@ -1,14 +1,13 @@
 :root {
   --orange: #feb237;
   --white: #ffffff;
-  --bg: #ffbc37;
+  --bg: #e6e4e4;
   --blackish: rgb(47, 47, 47);
 }
 
 html {
   font-family: sans-serif;
-  /* background-image: url("../public/assets/images/what-the-hex.png"); */
-  background-color: var(--white);
+  background-color: var(--bg);
 }
 
 body {
