@@ -5,7 +5,7 @@ import "./About.css";
 const About = () => {
   return (
     <MainContainer>
-      <Container style={{ margin: "16px" }}>
+      <Container style={{ marginTop: "26px" }}>
         <Typography variant="h4" style={{ marginBottom: "16px" }}>
           About Us
         </Typography>

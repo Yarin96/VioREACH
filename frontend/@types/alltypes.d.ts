@@ -1,4 +1,4 @@
-declare module "react-transition-group";
+declare module "react-instagram-login";
 declare module "@mui/material/styles" {
   interface Theme {
     status: {

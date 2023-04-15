@@ -7,7 +7,6 @@
 
 html {
   font-family: sans-serif;
-  background-color: var(--bg);
 }
 
 body {
@@ -31,12 +30,8 @@ main {
   margin-top: 70px;
   width: 800px;
   height: 100%;
-  color: black;
   display: flex;
   flex-direction: column;
-  background-color: var(--white);
-  border-radius: 3px;
-  box-shadow: 0 4px 8px 0px rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 main .container {
