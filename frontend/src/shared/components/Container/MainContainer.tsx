@@ -3,9 +3,10 @@ import { Paper } from "@mui/material";
 
 const useStyles: any = makeStyles((theme) => ({
   root: {
-    height: "100vh",
+    height: "calc(100vh - 70px)",
     width: "100vw",
     overflow: "auto",
+    backgroundColor: "#F4F6F9",
   },
 }));
 

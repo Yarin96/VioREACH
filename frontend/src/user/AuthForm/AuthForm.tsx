@@ -24,6 +24,7 @@ import {
 } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
 import ErrorModal from "../../shared/components/UIElements/ErrorModal/ErrorModal";
+import MainContainer from "../../shared/components/Container/MainContainer";
 import "./AuthForm.css";
 
 const Auth = () => {
@@ -58,7 +59,7 @@ const Auth = () => {
   };
 
   return (
-    <div className="auth-container">
+    <MainContainer>
       {error && <ErrorModal error={error} onClear={clearErrorHandler} />}
       <Form method="post">
         <Container
@@ -225,7 +226,7 @@ const Auth = () => {
           </Grid>
         </Container>
       </Form>
-    </div>
+    </MainContainer>
   );
 };
 

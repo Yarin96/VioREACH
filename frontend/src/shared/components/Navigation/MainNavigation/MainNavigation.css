@@ -1,7 +1,3 @@
-a {
-  text-decoration: none;
-}
-
 .main_navigation_btn {
   width: 3rem;
   height: 3rem;
@@ -26,10 +22,12 @@ a {
   height: 100%;
 }
 
-.logo {
+.logo a {
   font-size: 200%;
   padding-left: 15px;
   padding-top: 5px;
+  text-decoration: none;
+  color: inherit;
 }
 
 @media (min-width: 870px) {

@@ -3,16 +3,21 @@ import NavLinks from "../NavLinks/NavLinks";
 import SideDrawer from "../SideDrawer/SideDrawer";
 import "./MainNavigation.css";
 import AnimatedLogo from "../AnimatedLogo/AnimatedLogo";
+import { Link } from "react-router-dom";
 
 const MainNavigation = () => {
   return (
-    <AppBar color="default">
-      <Toolbar>
+    <AppBar style={{ backgroundColor: "#FEFEFE" }}>
+      <Toolbar color="secondary">
         <Grid container justifyContent="space-between">
           <Grid xs={1} item>
             {/* <AnimatedLogo /> */}
-            <Typography variant="h4" className="logo">
-              VioREACH
+            <Typography
+              fontFamily={"'Rubik', sans-serif"}
+              className="logo"
+              style={{ color: "#000000" }}
+            >
+              <Link to="/">VioREACH</Link>
             </Typography>
           </Grid>
           <Grid xs={6} item className="links">
