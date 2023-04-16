@@ -68,22 +68,38 @@ def draw_each_person(frame, keypoints_with_scores, edges, confidence_threshold):
 
 
 def pose_estimation(input_video):
+    # Using movenet model
     model = hub.load("https://tfhub.dev/google/movenet/multipose/lightning/1")
     movenet = model.signatures["serving_default"]
     cap = cv2.VideoCapture(input_video)
+    MIN_WIDTH = 256
     # Read until video is completed
     while cap.isOpened():
         # Capture frame-by-frame, ret is just a return value, frame is the actual frame
         ret, frame = cap.read()
         aspect_ratio = frame.shape[0] / frame.shape[1]
-        min_width = 256
-        new_height = int(aspect_ratio * min_width)
+        new_width = int(frame.shape[1] / 2)
+        while new_width % 32 != 0:
+            if new_width < MIN_WIDTH:
+                new_width = MIN_WIDTH
+                break
+            new_width /= 2
+        new_height = int(aspect_ratio * new_width)
+        temp1 = new_height
+        temp2 = new_height
         while new_height % 32 != 0:
-            new_height += 1
+            temp1 += 1
+            temp2 -= 1
+            if temp1 % 32 == 0:
+                new_height = temp1
+            if temp2 % 32 == 0:
+                new_height = temp2
+        print(f"ORIGINAL HEIGHT/ WIDTH: {int(frame.shape[0])} X {int(frame.shape[1])}")
+        print(f"NEW HEIGHT/ WIDTH: {new_height} X {new_width}")
         # Resize the image, so it fit the model requierments into a copy, the detection will be on the copy, the result
         # render will be on the original frame.
         img = frame.copy()
-        img = tf.image.resize_with_pad(tf.expand_dims(img, axis=0), new_height, min_width)
+        img = tf.image.resize_with_pad(tf.expand_dims(img, axis=0), new_height, new_width)
         input_img = tf.cast(img, dtype=tf.int32)
 
         # Make detection
@@ -93,10 +109,17 @@ def pose_estimation(input_video):
         # so grab only the first 51 values
         keyPoints_with_scores = results["output_0"].numpy()[:, :, :51].reshape((6, 17, 3))
         # reshaping so we get an array for every person, and nested inside is an array for every keypoint
-        # the 3 dimension is: x value, y value, and a score value(score is how confident is the model that the x,y coordinates are correct
+        # the 3 dimension is: x value, y value, and a score value(score is how confident is the model that the x,y coordinates are correct)
+        # for each key point (total 17 key points * 3 values for each one)
+
+        ############################## When i need to calculate speed and location of limbs use this as a baseline ##############################
+        # The order of the 17 keypoint joints is: [nose, left eye, right eye, left ear, right ear, left shoulder,
+        # right shoulder, left elbow, right elbow, left wrist, right wrist, left hip, right hip, left knee, right knee, left ankle, right ankle].
+        #########################################################################################################################################
+
 
         # Render keypoints
-        draw_each_person(frame, keyPoints_with_scores, EDGES, 0.5)
+        draw_each_person(frame, keyPoints_with_scores, EDGES, 0.25)
 
         cv2.imshow("Movenet multipose", frame)
         # Press Q on keyboard to  exit
