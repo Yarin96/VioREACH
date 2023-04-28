@@ -6,7 +6,7 @@ const useStyles: any = makeStyles((theme) => ({
     height: "calc(100vh - 120px)",
     width: "100vw",
     overflow: "auto",
-    backgroundColor: "#F4F6F9",
+    backgroundColor: "#f4f6f9 !important",
   },
 }));
 

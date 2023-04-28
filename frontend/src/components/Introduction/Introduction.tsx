@@ -100,7 +100,9 @@ const Introduction = () => {
             Technologies Stack
           </Typography>
         </Grid>
-        <TechnologiesCarousel />
+        <Grid style={{ marginTop: "56px", marginBottom: "26px" }}>
+          <TechnologiesCarousel />
+        </Grid>
       </Container>
     </MainContainer>
   );

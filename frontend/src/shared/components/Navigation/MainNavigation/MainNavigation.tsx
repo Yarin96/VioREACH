@@ -10,12 +10,12 @@ const MainNavigation = () => {
     <AppBar style={{ backgroundColor: "#FEFEFE" }}>
       <Toolbar color="secondary">
         <Grid container justifyContent="space-between">
-          <Grid xs={1} item>
-            {/* <AnimatedLogo /> */}
+          <Grid xs={1} item style={{ display: "flex" }}>
+            <AnimatedLogo />
             <Typography
               fontFamily={"'Rubik', sans-serif"}
               className="logo"
-              style={{ color: "#000000" }}
+              style={{ color: "#000000", marginLeft: "20px" }}
             >
               <Link to="/">VioREACH</Link>
             </Typography>
