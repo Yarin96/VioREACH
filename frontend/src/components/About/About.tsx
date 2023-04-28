@@ -1,5 +1,18 @@
 import MainContainer from "../../shared/components/Container/MainContainer";
-import { Typography, Divider, Container } from "@mui/material";
+import {
+  Typography,
+  Divider,
+  Container,
+  Card,
+  CardContent,
+  CardMedia,
+  CardActions,
+  Button,
+  Grid,
+} from "@mui/material";
+import BenImg from "./images/Ben.png";
+import YarinImg from "./images/Yarin.png";
+import IdeasImg from "./images/ideas.png";
 import "./About.css";
 
 const About = () => {
@@ -31,9 +44,97 @@ const About = () => {
         >
           Our software development team is comprised of highly-skilled and
           experienced professionals who are passionate about creating innovative
-          software solutions.
+          software solutions. We adopted this project to challenge ourselves
+          with the vast world of Machine Learning. Please let us know your
+          thoughts and if there are any additional features or improvements you
+          would like to see in our system.
+          <br /> Feel free to contact us! 💙
         </Typography>
-        <Divider />
+        <Divider style={{ margin: "26px 26px" }} />
+        <Grid container spacing={25} style={{ marginBottom: "56px" }}>
+          <Grid item xs={12} md={6}>
+            <Card>
+              <CardMedia
+                sx={{ height: 340 }}
+                image={BenImg}
+                title="Ben Daniels"
+              />
+              <CardContent>
+                <Typography gutterBottom variant="h5" component="div">
+                  Ben Daniels
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Software Developer
+                </Typography>
+              </CardContent>
+              <CardActions style={{ justifyContent: "center" }}>
+                <Button size="small">
+                  <a
+                    href="https://www.linkedin.com/in/bendaniels-p/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    LinkedIn
+                  </a>
+                </Button>
+                <Button size="small">
+                  <a
+                    href="https://www.facebook.com/get.out.from.my.page"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Facebook
+                  </a>
+                </Button>
+              </CardActions>
+            </Card>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <Card>
+              <CardMedia
+                sx={{ height: 340 }}
+                image={YarinImg}
+                title="Yarin Bar"
+              />
+              <CardContent>
+                <Typography gutterBottom variant="h5" component="div">
+                  Yarin Bar
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Software Developer
+                </Typography>
+              </CardContent>
+              <CardActions style={{ justifyContent: "center" }}>
+                <Button size="small">
+                  <a
+                    href="https://www.linkedin.com/in/yarinb/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    LinkedIn
+                  </a>
+                </Button>
+                <Button size="small">
+                  <a
+                    href="https://www.facebook.com/profile.php?id=100065295773673"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Facebook
+                  </a>
+                </Button>
+              </CardActions>
+            </Card>
+          </Grid>
+        </Grid>
+        <Divider style={{ margin: "26px 26px" }} />
+        <Grid item xs={12} md={5}>
+          <img
+            src={IdeasImg}
+            alt="ideas"
+            style={{ width: "100%", maxWidth: "500px" }}
+          />
+        </Grid>
       </Container>
     </MainContainer>
   );

@@ -12,7 +12,7 @@ const Footer = () => {
         color: "black",
         zIndex: "6",
         padding: "0",
-        boxShadow: "0px -2px 10px rgba(0, 0, 0, 0.25)",
+        boxShadow: "0px -2px 5px rgba(0, 0, 0, 0.25)",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
