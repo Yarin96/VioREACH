@@ -26,3 +26,5 @@ yarn-error.log*
 *.pt
 runs
 nodemon.json
+
+certificates/

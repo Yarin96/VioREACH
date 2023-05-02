@@ -1,24 +1,31 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+const https = require("https");
 const usersRoutes = require("./routes/users-routes");
 const HttpError = require("./models/http-error");
+const fs = require("fs");
+const cors = require("cors");
 
 const app = express();
 
 app.use(bodyParser.json());
 
-app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-  );
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE");
-  next();
-});
+app.use(cors());
+
+const privateKey = fs.readFileSync(__dirname + "/certificates/key.pem", "utf8");
+const certificate = fs.readFileSync(
+  __dirname + "/certificates/cert.pem",
+  "utf8"
+);
+
+const credentials = { key: privateKey, cert: certificate };
+
+const httpsServer = https.createServer(credentials, app);
 
 app.use("/auth", usersRoutes);
+
+app.use("/detection", usersRoutes);
 
 app.use((req, res, next) => {
   const error = new HttpError("Could not find this route.", 404);
@@ -34,6 +41,8 @@ app.use((error, req, res, next) => {
     .status(error.code || 500)
     .json({ message: error.message || "An unknown error occurred!" });
 });
+
+httpsServer.listen(8443);
 
 mongoose
   .connect(
