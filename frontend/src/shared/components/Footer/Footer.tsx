@@ -5,7 +5,9 @@ const Footer = () => {
     <Toolbar
       style={{
         position: "fixed",
+        left: "0",
         bottom: "0",
+        right: "0",
         backgroundColor: "#FEFEFE",
         height: "50px",
         width: "100%",

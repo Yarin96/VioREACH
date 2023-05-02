@@ -2,16 +2,11 @@ import React, { useState } from "react";
 import axios from "axios";
 import "./Detection.css";
 import Button from "../../shared/components/UIElements/Button/Button";
-import BgEffects from "../../shared/components/UIElements/BgEffects/BgEffects";
 import Instructions from "./Instructions";
 import MainContainer from "../../shared/components/Container/MainContainer";
 
 const Detection: React.FC = () => {
   const [result, setResult] = useState(null);
-
-  const accessToken = process.env.REACT_APP_INSTAGRAM_API_KEY;
-  const fields = "id,caption,media_type,media_url,thumbnail_url";
-  const url = `https://graph.instagram.com/me/media?fields=${fields}&access_token=${accessToken}`;
 
   const sendDataToServer = async (videos: any) => {
     try {
@@ -34,36 +29,32 @@ const Detection: React.FC = () => {
     }
   };
 
-  const clickHandler = async () => {
-    const fetchVideosFromAPI = async () => {
-      const videosUrls = [];
+  const openNewWindow = (url: string, width: number, height: number) => {
+    const left = window.screen.width / 2 - width / 2;
+    const top = window.screen.height / 2 - height / 2;
+    const features = `left=${left},top=${top},width=${width},height=${height}`;
+    const authWindow = window.open(url, "_blank", features)?.focus();
 
-      try {
-        const response = await axios.get(url);
-        const fetchedData = await response.data;
+    return authWindow;
+  };
 
-        for (const item of fetchedData.data) {
-          if (item.media_type === "VIDEO") {
-            videosUrls.push(item.media_url);
-          }
-        }
-
-        return videosUrls;
-      } catch (error: any) {
-        console.log(error.message);
-      }
-    };
-
-    const result = await fetchVideosFromAPI();
-    console.log(result);
-    sendDataToServer(result);
+  const getInstagramAccessHandler = async () => {
+    try {
+      const appId = process.env.REACT_APP_APP_ID_KEY;
+      const redirectUri = process.env.REACT_APP_REDIRECT_URI;
+      let url = `https://api.instagram.com/oauth/authorize?client_id=${appId}&redirect_uri=${redirectUri}&scope=user_profile,user_media&response_type=code`;
+      openNewWindow(url, 600, 600);
+      const response: any = await axios.get("https://localhost:8443/detection");
+      // sendDataToServer(response.data.videoList);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
     <MainContainer>
       <Instructions />
-      <Button text="Permit Access" onClick={clickHandler} />
-      {/* <BgEffects /> */}
+      <Button text="Permit Access" onClick={getInstagramAccessHandler} />
     </MainContainer>
   );
 };
