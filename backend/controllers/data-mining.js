@@ -27,28 +27,15 @@ const setUpInstagram = async (token) => {
 
     accessToken = result.data.access_token;
     userId = result.data.user_id;
-
-    const fields = "id,caption,media_type,media_url,thumbnail_url";
-    const url = `https://graph.instagram.com/me/media?fields=${fields}&access_token=${accessToken}`;
-
-    // get data from user account
-    response = await axios.get(url);
-
-    const fetchedData = response.data;
-    if (!fetchedData) return console.log("No valid data found.");
-
-    for (const item of fetchedData.data) {
-      if (item.media_type === "VIDEO") {
-        videosUrls.push(item.media_url);
-      }
-    }
   } catch (error) {
     console.log(error.message);
-    return { message: "Authentication Failed!", videoList: [] };
+    return { message: "Authentication Failed!" };
   }
 
-  console.log(videosUrls);
-  return { message: "Authentication Succeeded!", videoList: videosUrls };
+  return {
+    message: "Authentication Succeeded!",
+    accessToken: accessToken,
+  };
 };
 
 module.exports = {
