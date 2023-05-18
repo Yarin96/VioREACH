@@ -1,14 +1,8 @@
 from ultralytics import YOLO as yolo
 import cv2
 import yaml
-import torch.nn as nn
-import torchvision.models as models
 import os
 
-from flask import Flask, request, jsonify
-from flask_cors import CORS
-from urllib.request import urlretrieve
-import subprocess
 
 
 def first_time_setups():
@@ -79,7 +73,11 @@ def get_frames_identify_vectors(videoFileName):
         if os.path.isfile(os.path.join(directory, path)):
             count += 1
     for file in range(1, count + 1):
-        currentFile = open(directory + videoFileName + "_" + str(file) + ".txt")
+        try:
+            currentFile = open(directory + videoFileName + "_" + str(file) + ".txt")
+        except FileNotFoundError:
+            os.remove(fr"VideosFramesOutputs/{videoFileName}/frame{str(file)}.jpg")
+            continue
         framesDetectionVectors.append(currentFile.readlines())
     # printing_objects(framesDetectionVectors)
     identify_classes(framesDetectionVectors, videoFileName)
@@ -121,7 +119,10 @@ def identify_classes(processed_frames, videoFileName):
         frame_num = "frame" + str(i + 1)
         imgSrc = f"VideosFramesOutputs/{videoFileName}/{frame_num}.jpg"
         img = cv2.imread(imgSrc)
-        height, width = img.shape[0], img.shape[1]
+        try:
+            height, width = img.shape[0], img.shape[1]
+        except AttributeError:
+            continue
         for obj in frame:
             obj[1]["centerXcor"] *= width
             obj[2]["centerYcor"] *= height
@@ -143,39 +144,19 @@ def identify_classes(processed_frames, videoFileName):
     printing_objects(real_bounding_boxes)
 
 
+def train_model(yaml_file, epochs):
+    model_to_train = yolo("yolov8x.yaml")
+    return model_to_train.train(data=yaml_file, epochs=epochs, workers=2)
 
-app = Flask(__name__)
-CORS(app, supports_credentials=True)
 
-
-# Videos API Route
-@app.route("/detection", methods=["POST"])
-def detect_video():
-    if request.method == 'POST':
-        data = request.get_json()
-        video_url = str(data.get('video_url'))
-
-        # Download the video from the URL and save it to a local file
-        video_file_path = os.path.join('D:/ViolenceDetectionProject/backend/detect-algorithm/video.mp4')
-        
-        urlretrieve(video_url, video_file_path)
-        define_yolov8_model(video_file_path)
-        get_frames_identify_vectors()
-
-        # script_path = os.path.join(os.path.dirname(__file__), video_file_path)
-        # violence_detections = subprocess.run(['python', 'detect.py', '--source', str(video_file_path)], stdout=subprocess.PIPE)
-
-        # return jsonify({'processed_output': violence_detections.stdout.decode()})
-    else:
-        raise 'Error'
 
 if __name__ == "__main__":
-    app.run(port=5000)
-
-# if __name__ == "__main__":
-#     # first_time_setups()
-#     videoFile = "V_3.mp4"
-#     videoFileForFrames = videoFile[:str.rfind(videoFile, ".")]
-#     define_and_predict_yolov8(videoFile)
-#     get_frames_identify_vectors(videoFileForFrames)
+    # first_time_setups()
+    # videoFile = "test1.mp4"
+    # videoFileForFrames = videoFile[:str.rfind(videoFile, ".")]
+    # define_and_predict_yolov8(videoFile)  # gets the full file name
+    # get_frames_identify_vectors(videoFileForFrames)
+    model_test = yolo("best.pt")
+    model_test.to("cuda")
+    model_test.predict("V_2.mp4", save=True)
 
