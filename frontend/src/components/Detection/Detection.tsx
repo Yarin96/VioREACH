@@ -211,27 +211,31 @@ const Detection: React.FC = () => {
               </Grid>
             </Grid>
             <Divider />
-            <Typography
-              fontWeight="bold"
-              variant="h5"
-              style={{
-                marginTop: "36px",
-                marginBottom: "36px",
-                textDecoration: "underline",
-              }}
-              fontFamily={"'Rubik', sans-serif"}
-            >
-              Activate Our Algorithm
-            </Typography>
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              sx={{ mt: "12px" }}
-              onClick={sendDataToServer}
-            >
-              Start Scanning Your Profile
-            </Button>
+            {!result && (
+              <>
+                <Typography
+                  fontWeight="bold"
+                  variant="h5"
+                  style={{
+                    marginTop: "36px",
+                    marginBottom: "36px",
+                    textDecoration: "underline",
+                  }}
+                  fontFamily={"'Rubik', sans-serif"}
+                >
+                  Activate Our Algorithm
+                </Typography>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  sx={{ mt: "12px" }}
+                  onClick={sendDataToServer}
+                >
+                  Start Scanning Your Profile For Violence
+                </Button>
+              </>
+            )}
           </>
         )}
       </Container>
