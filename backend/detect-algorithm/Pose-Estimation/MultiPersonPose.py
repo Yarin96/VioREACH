@@ -29,7 +29,6 @@ EDGES = {
 
 def set_gpu_memory():
     gpus = tf.config.list_physical_devices("GPU")
-    print(gpus)
     for gpu in gpus:
         tf.config.experimental.set_memory_growth(gpu, True)
 
@@ -69,7 +68,8 @@ def draw_each_person(frame, keypoints_with_scores, edges, confidence_threshold):
 
 def pose_estimation(input_video):
     # Using movenet model
-    model = hub.load("https://tfhub.dev/google/movenet/multipose/lightning/1")
+    # https://tfhub.dev/google/movenet/multipose/lightning/1
+    model = hub.load("movenet")
     movenet = model.signatures["serving_default"]
     cap = cv2.VideoCapture(input_video)
     MIN_WIDTH = 256
@@ -94,8 +94,6 @@ def pose_estimation(input_video):
                 new_height = temp1
             if temp2 % 32 == 0:
                 new_height = temp2
-        print(f"ORIGINAL HEIGHT/ WIDTH: {int(frame.shape[0])} X {int(frame.shape[1])}")
-        print(f"NEW HEIGHT/ WIDTH: {new_height} X {new_width}")
         # Resize the image, so it fit the model requierments into a copy, the detection will be on the copy, the result
         # render will be on the original frame.
         img = frame.copy()
@@ -120,7 +118,6 @@ def pose_estimation(input_video):
 
         # Render keypoints
         draw_each_person(frame, keyPoints_with_scores, EDGES, 0.25)
-
         cv2.imshow("Movenet multipose", frame)
         # Press Q on keyboard to  exit
         if cv2.waitKey(10) & 0xFF == ord('q'):
@@ -132,8 +129,46 @@ def pose_estimation(input_video):
     cv2.destroyAllWindows()
 
 
+def assert_if_violence(frame, keypoints):
+    locations_with_violence = []
+    person_index = 0
+    other_person_index = 0
+    headPoints = []
+    limbPoints = []
+    allPeoplePoints = []
+    for person in keypoints:
+        tempHeadPoints = []
+        tempLimbPoints = []
+        for point in person[0:5]:
+            tempHeadPoints.append(point[0:2])
+        for point in person[7:]:
+            tempLimbPoints.append(point[0:2])
+        allPeoplePoints.append([tempHeadPoints, tempLimbPoints])
+    for man in allPeoplePoints:
+        print(man)
+        # print(f"tempPoints for {person_index} \n\n {tempPoints}")
+        # for otherPerson in keypoints:
+        #     if person_index == other_person_index:
+        #         print("This is the same person")
+        #         other_person_index += 1
+        #         pass
+        #     limbsPoints = []
+        #     for point in otherPerson[7:]:
+        #         limbsPoints.append(point[0:2])
+        #     print(f"limbPoints for {other_person_index} \n\n {limbsPoints}")
+        #     for limbPoint in limbsPoints:
+        #         for headPoint in tempPoints:
+        #             if limbPoint[0] - headPoint[0] < 0.0001 and limbPoint[1] - headPoint[1] < 0.0001:
+        #                 locations_with_violence.append(headPoint)
+        #     other_person_index += 1
+        # person_index += 1
+
+
+
+
+
 
 if __name__ == "__main__":
     set_gpu_memory()
-    loc = "dance.mp4"
+    loc = "t1.mp4"
     pose_estimation(loc)

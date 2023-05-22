@@ -2,12 +2,13 @@ from ultralytics import YOLO as yolo
 import cv2
 import yaml
 import os
+import shutil
 
 
 
 def first_time_setups():
-    os.mkdir("VideosFramesOutputs")
-    os.mkdir("VideosPredictionsOutputs")
+    os.mkdir("ExtractionUsingYOLOv8/VideosFramesOutputs")
+    os.mkdir("ExtractionUsingYOLOv8/VideosPredictionsOutputs")
 
 
 def printing_objects(obj_list):
@@ -20,7 +21,7 @@ def frame_capture(path):
     # Path to video file
     vidObj = cv2.VideoCapture(path)
     dirToCreate = path[:str.rfind(path, ".")]
-    fullDir = f"VideosFramesOutputs/{dirToCreate}"
+    fullDir = f"ExtractionUsingYOLOv8/VideosFramesOutputs/{dirToCreate}"
     try:
         os.mkdir(fullDir)
     except:
@@ -46,14 +47,13 @@ def frame_capture(path):
 def define_and_predict_yolov8(videoToPredict):
     """ Define the model, predict and save the outcome into txt files given a video
     Calls the function to extract frames from the video"""
-    model = yolo(
-        "yolov8x.pt")  # check the option to create my own yaml file to use my own model and not yolo8 prebuilt model
+    model = yolo("ExtractionUsingYOLOv8/best.pt")
     model.to("cuda")
     frame_capture(videoToPredict)
     model.predict(videoToPredict, save=True, save_txt=True)
     src = "runs/detect/predict"
-    os.mkdir("VideosPredictionsOutputs/" + videoToPredict[:str.rfind(videoToPredict, ".")])
-    dst = "VideosPredictionsOutputs/" + videoToPredict[:str.rfind(videoToPredict, ".")]
+    os.mkdir("ExtractionUsingYOLOv8/VideosPredictionsOutputs/" + videoToPredict[:str.rfind(videoToPredict, ".")])
+    dst = "ExtractionUsingYOLOv8/VideosPredictionsOutputs/" + videoToPredict[:str.rfind(videoToPredict, ".")]
     allfiles = os.listdir(src)
     for file in allfiles:
         src_path = os.path.join(src, file)
@@ -64,7 +64,7 @@ def define_and_predict_yolov8(videoToPredict):
 
 def get_frames_identify_vectors(videoFileName):
     """Given a video name that has been predicted, get the predictions and call a function to identify classes"""
-    directory = fr"VideosPredictionsOutputs/{videoFileName}/labels/"
+    directory = fr"ExtractionUsingYOLOv8/VideosPredictionsOutputs/{videoFileName}/labels/"
     count = 0
     framesDetectionVectors = []
     # Iterate directory
@@ -76,11 +76,12 @@ def get_frames_identify_vectors(videoFileName):
         try:
             currentFile = open(directory + videoFileName + "_" + str(file) + ".txt")
         except FileNotFoundError:
-            os.remove(fr"VideosFramesOutputs/{videoFileName}/frame{str(file)}.jpg")
+            if os.path.exists(fr"ExtractionUsingYOLOv8/VideosFramesOutputs/{videoFileName}/frame{str(file)}.jpg"):
+                os.remove(fr"ExtractionUsingYOLOv8/VideosFramesOutputs/{videoFileName}/frame{str(file)}.jpg")
             continue
         framesDetectionVectors.append(currentFile.readlines())
     # printing_objects(framesDetectionVectors)
-    identify_classes(framesDetectionVectors, videoFileName)
+    return identify_classes(framesDetectionVectors, videoFileName)
 
 
 def show_boundingBox_image(img, top_left, bottom_right):
@@ -91,12 +92,13 @@ def show_boundingBox_image(img, top_left, bottom_right):
 
 
 def identify_classes(processed_frames, videoFileName):
-    yolo_classes = open("coco8.yaml", encoding="utf8")
+    yolo_classes = open("ExtractionUsingYOLOv8/data.yaml", encoding="utf8")
     names = yaml.safe_load(yolo_classes)["names"]
     foundClasses = []
     boundingBoxes = []
     objsInFrame = []
     LocationOfObj = []
+    ans_vector = []
     for frame in processed_frames:
         for obj in frame:
             objClass = int(obj.split()[0])
@@ -107,17 +109,19 @@ def identify_classes(processed_frames, videoFileName):
                                   {"normalizedWidth": float(normalizedWidth)},
                                   {"normalizedHeight": float(normalizedHeight)}])
             objsInFrame.append({objClass: names[objClass]})
+            if names[objClass] == "Violence" and len(ans_vector) == 0:
+                ans_vector.append(1)
         foundClasses.append(objsInFrame)
         boundingBoxes.append(LocationOfObj)
         objsInFrame = []
         LocationOfObj = []
-
-    # printing_objects(boundingBoxes)
+    if len(ans_vector) == 0:
+        ans_vector.append(0)
     real_bounding_boxes = []
     one_frame_objs = []
     for i, frame in enumerate(boundingBoxes):
         frame_num = "frame" + str(i + 1)
-        imgSrc = f"VideosFramesOutputs/{videoFileName}/{frame_num}.jpg"
+        imgSrc = f"ExtractionUsingYOLOv8/VideosFramesOutputs/{videoFileName}/{frame_num}.jpg"
         img = cv2.imread(imgSrc)
         try:
             height, width = img.shape[0], img.shape[1]
@@ -136,27 +140,31 @@ def identify_classes(processed_frames, videoFileName):
             classDescription = classDescription[0]
             classCodeInYamlFile = classDescription[0]  # if ever needed when building own yaml file
             one_frame_objs.append(
-                [{"class": classDescription[1]}, {"top_left": top_left}, {"bottom_right": bottom_right}])
+                [{"frame": frame_num}, {"class": classDescription[1]}, {"top_left": top_left}, {"bottom_right": bottom_right}])
 
         real_bounding_boxes.append(one_frame_objs)
         one_frame_objs = []
 
-    printing_objects(real_bounding_boxes)
+    print(real_bounding_boxes)
+    return ans_vector
 
 
 def train_model(yaml_file, epochs):
-    model_to_train = yolo("yolov8x.yaml")
+    model_to_train = yolo("ExtractionUsingYOLOv8/yolov8x.yaml")
     return model_to_train.train(data=yaml_file, epochs=epochs, workers=2)
 
 
-
-if __name__ == "__main__":
+def active_detection(video):
     # first_time_setups()
-    # videoFile = "test1.mp4"
-    # videoFileForFrames = videoFile[:str.rfind(videoFile, ".")]
-    # define_and_predict_yolov8(videoFile)  # gets the full file name
-    # get_frames_identify_vectors(videoFileForFrames)
-    model_test = yolo("best.pt")
-    model_test.to("cuda")
-    model_test.predict("V_2.mp4", save=True)
+    if os.path.exists("ExtractionUsingYOLOv8/runs/detect/predict"):
+        os.rmdir("ExtractionUsingYOLOv8/runs/detect/predict")
+    if os.path.exists(f"ExtractionUsingYOLOv8/VideosFramesOutputs/{video[:str.rfind(video, '.')]}"):
+        print("Video already detected")
+        return
+    videoFileForFrames = video[:str.rfind(video, ".")]
+    define_and_predict_yolov8(video)  # gets the full file name
+    if os.path.exists("runs"):
+        shutil.rmtree("runs")
+    return get_frames_identify_vectors(videoFileForFrames)
+
 
