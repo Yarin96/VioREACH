@@ -10,13 +10,29 @@ from flask_cors import CORS
 from urllib.request import urlretrieve
 
 
-# Function to extract frames
-def FrameCapture(path):
+def first_time_setups():
+    os.mkdir("VideosFramesOutputs")
+    os.mkdir("VideosPredictionsOutputs")
+
+
+def printing_objects(obj_list):
+    for obj in obj_list:
+        print(obj)
+
+
+def frame_capture(path):
+    """Extract frames from a video with a given path"""
     # Path to video file
     vidObj = cv2.VideoCapture(path)
-
+    dirToCreate = path[:str.rfind(path, ".")]
+    fullDir = f"VideosFramesOutputs/{dirToCreate}"
+    try:
+        os.mkdir(fullDir)
+    except:
+        print("Video already analyzed")
+        return
     # Used as counter variable
-    count = 0
+    count = 1
 
     # checks whether frames were extracted
     success = 1
@@ -25,79 +41,111 @@ def FrameCapture(path):
         # vidObj object calls read
         # function extract frames
         success, image = vidObj.read()
-
-        # Saves the frames with frame-count
-        cv2.imwrite(f"frame{count}.jpg", image)
+        if success:
+            # Saves the frames with frame-count
+            cv2.imwrite(f"{fullDir}/frame{count}.jpg", image)
 
         count += 1
 
-def define_yolov8_model(video_file):
-    model = yolo("yolov8x.pt") # check the option to create my own yaml file to use my own model and not yolo8 prebuild model
-    model.predict(video_file, save=True, save_txt=True)
+
+def define_and_predict_yolov8(videoToPredict):
+    """ Define the model, predict and save the outcome into txt files given a video
+    Calls the function to extract frames from the video"""
+    model = yolo(
+        "yolov8x.pt")  # check the option to create my own yaml file to use my own model and not yolo8 prebuilt model
+    model.to("cuda")
+    frame_capture(videoToPredict)
+    model.predict(videoToPredict, save=True, save_txt=True)
+    src = "runs/detect/predict"
+    os.mkdir("VideosPredictionsOutputs/" + videoToPredict[:str.rfind(videoToPredict, ".")])
+    dst = "VideosPredictionsOutputs/" + videoToPredict[:str.rfind(videoToPredict, ".")]
+    allfiles = os.listdir(src)
+    for file in allfiles:
+        src_path = os.path.join(src, file)
+        dst_path = os.path.join(dst, file)
+        os.rename(src_path, dst_path)
+    os.rmdir(src)
 
 
-def get_frames_identify_vectors():
-    directory = r"runs/detect/predict/labels"
+def get_frames_identify_vectors(videoFileName):
+    """Given a video name that has been predicted, get the predictions and call a function to identify classes"""
+    directory = fr"VideosPredictionsOutputs/{videoFileName}/labels/"
     count = 0
-    allFrames = []
+    framesDetectionVectors = []
     # Iterate directory
     for path in os.listdir(directory):
         # check if current path is a file
         if os.path.isfile(os.path.join(directory, path)):
             count += 1
     for file in range(1, count + 1):
-        currentFile = open(directory + "/video_1_" + str(file) + ".txt")
-        allFrames.append(currentFile.readlines())
-    for frame in allFrames:
-        print(frame)
-    identify_classes(allFrames)
+        currentFile = open(directory + videoFileName + "_" + str(file) + ".txt")
+        framesDetectionVectors.append(currentFile.readlines())
+    # printing_objects(framesDetectionVectors)
+    identify_classes(framesDetectionVectors, videoFileName)
 
 
-def identify_classes(all_frames):
+def show_boundingBox_image(img, top_left, bottom_right):
+    img2 = cv2.rectangle(img, top_left, bottom_right, (0, 255, 0), 5)
+    cv2.imshow("image", img2)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+
+
+def identify_classes(processed_frames, videoFileName):
     yolo_classes = open("coco8.yaml", encoding="utf8")
     names = yaml.safe_load(yolo_classes)["names"]
     foundClasses = []
     boundingBoxes = []
     objsInFrame = []
     LocationOfObj = []
-    for frame in all_frames:
+    for frame in processed_frames:
         for obj in frame:
             objClass = int(obj.split()[0])
             centerXcor, centerYcor, normalizedWidth, normalizedHeight = obj.split()[1:]
-            LocationOfObj.append([{objClass: names[objClass]}, {"centerXcor": float(centerXcor)}, {"centerYcor": float(centerYcor)}, {"normalizedWidth": float(normalizedWidth)}, {"normalizedHeight": float(normalizedHeight)}])
+            LocationOfObj.append([{objClass: names[objClass]},
+                                  {"centerXcor": float(centerXcor)},
+                                  {"centerYcor": float(centerYcor)},
+                                  {"normalizedWidth": float(normalizedWidth)},
+                                  {"normalizedHeight": float(normalizedHeight)}])
             objsInFrame.append({objClass: names[objClass]})
         foundClasses.append(objsInFrame)
         boundingBoxes.append(LocationOfObj)
         objsInFrame = []
         LocationOfObj = []
 
-    # for frame in boundingBoxes:
-    #     print(frame)
-    """
-    for now the values for the Xcor and Ycor and all are normalized,
-    its needed to calculate the actual position in the image, and for that we need to take each photo:
-    img = cv2.imread("directory of video")
-    height, width = img.shape[0], img.shape[1]
-    centerXcor *= width
-    centerYcor *= height
-    normalizedWidth *= width
-    normalizedHeight *= height
-    and with that we can get the bounding box:
-    top_left = (int(centerXcor - normalizedWidth/2), int(centerYcor - normalizedHeight/2))
-    bottom_right = (int(centerXcor + normalizedWidth/2), int(centerYcor + normalizedHeight/2))
-    and like that we get real coordinates and not normalized
-    and then:
-    img = cv2.rectangle(img, top_left, bottom_right, {color of the bounding box}: (0, 255, 0), {thickness of the bounding box}: 3)
-    cv2_imshow(img)
-    and that will show the image with the bounding box on the object
-    line 76 is the tricky one cause we need to do this to each frame in the video, need to check if there is a 
-    more efficient way of doing it
-    """
+    # printing_objects(boundingBoxes)
+    real_bounding_boxes = []
+    one_frame_objs = []
+    for i, frame in enumerate(boundingBoxes):
+        frame_num = "frame" + str(i + 1)
+        imgSrc = f"VideosFramesOutputs/{videoFileName}/{frame_num}.jpg"
+        img = cv2.imread(imgSrc)
+        height, width = img.shape[0], img.shape[1]
+        for obj in frame:
+            obj[1]["centerXcor"] *= width
+            obj[2]["centerYcor"] *= height
+            obj[3]["normalizedWidth"] *= width
+            obj[4]["normalizedHeight"] *= height
+            top_left = (int(obj[1]["centerXcor"] - obj[3]["normalizedWidth"] / 2),
+                        int(obj[2]["centerYcor"] - obj[4]["normalizedHeight"] / 2))
+            bottom_right = (int(obj[1]["centerXcor"] + obj[3]["normalizedWidth"] / 2),
+                            int(obj[2]["centerYcor"] + obj[4]["normalizedHeight"] / 2))
+            classDescription = list(obj[0].items())
+            classDescription = classDescription[0]
+            classCodeInYamlFile = classDescription[0]  # if ever needed when building own yaml file
+            one_frame_objs.append(
+                [{"class": classDescription[1]}, {"top_left": top_left}, {"bottom_right": bottom_right}])
+
+        real_bounding_boxes.append(one_frame_objs)
+        one_frame_objs = []
+
+    printing_objects(real_bounding_boxes)
 
 
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
+
 
 # Videos API Route
 @app.route("/detection", methods=["POST"])
@@ -114,7 +162,13 @@ def detect_video():
         get_frames_identify_vectors()
     else:
         raise 'Error'
-
+    
 if __name__ == "__main__":
     app.run(port=5000)
+    # first_time_setups()
+    videoFile = "V_3.mp4"
+    videoFileForFrames = videoFile[:str.rfind(videoFile, ".")]
+    define_and_predict_yolov8(videoFile)
+    get_frames_identify_vectors(videoFileForFrames)
+
 

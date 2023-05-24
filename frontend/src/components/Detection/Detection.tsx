@@ -80,17 +80,17 @@ const Detection: React.FC = () => {
     try {
       setIsLoading(true);
       const tempToken = localStorage.getItem("token");
-      // const response: any = await axios.post(
-      //   "http://127.0.0.1:5000/detection",
-      //   {
-      //     video_url: postsInfo.videoUrls[0],
-      //   },
-      //   {
-      //     headers: {
-      //       Authorization: `Bearer ${tempToken}`,
-      //     },
-      //   }
-      // );
+      const response: any = await axios.post(
+        "http://127.0.0.1:5000/detection",
+        {
+          video_url: postsInfo.videoUrls[0],
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${tempToken}`,
+          },
+        }
+      );
 
       setResult([0, 0, 0, 0, 0, 1, 1, 0]);
       setIsLoading(false);
