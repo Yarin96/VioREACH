@@ -106,7 +106,7 @@ def detect_video():
         data = request.get_json()
         video_url = str(data.get('video_url'))
 
-        # Download the video from the URL and save it to a local file
+        # Download the video from the URL and save it to a local file as MP4 file
         video_file_path = os.path.join('D:/ViolenceDetectionProject/backend/detect-algorithm/video.mp4')
         
         urlretrieve(video_url, video_file_path)
