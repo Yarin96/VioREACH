@@ -1,23 +1,14 @@
 import React, { useState } from "react";
 import axios from "axios";
 import "./Detection.css";
+import Title from "./Title";
 import Instructions from "./Instructions";
 import MainContainer from "../../shared/components/Container/MainContainer";
-import {
-  Typography,
-  Container,
-  Divider,
-  Button,
-  Box,
-  Grid,
-  Card,
-  CardContent,
-  CardActionArea,
-} from "@mui/material";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import ImageIcon from "@mui/icons-material/Image";
-import OndemandVideoIcon from "@mui/icons-material/OndemandVideo";
-import DynamicFeedIcon from "@mui/icons-material/DynamicFeed";
+import ProfileStats from "../ProfileStats/ProfileStats";
+import ActivationButton from "./ActivationButton";
+import ResultsPage from "../ResultsPage/ResultsPage";
+import { Container, Button, Box } from "@mui/material";
+import CircularProgress from "@mui/material/CircularProgress";
 
 interface PostsInfo {
   username: string;
@@ -26,7 +17,8 @@ interface PostsInfo {
 }
 
 const Detection: React.FC = () => {
-  const [result, setResult] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [result, setResult] = useState<number[]>([]);
   const [arePostsExtracted, setArePostsExtracted] = useState(false);
   const [isClicked, setIsClicked] = useState(false);
 
@@ -36,25 +28,29 @@ const Detection: React.FC = () => {
     imageUrls: [],
   });
 
-  const extractPostsHandler = async (event: any) => {
-    const response: any = await axios.get(
-      "https://localhost:8443/detection/posts"
-    );
+  const extractPostsHandler = async () => {
+    try {
+      const response: any = await axios.get(
+        "https://localhost:8443/detection/posts"
+      );
 
-    setArePostsExtracted(true);
-    // console.log(response.data.fetchedData);
-    setPostsInfo((prevPostsInfo) => {
-      return {
-        ...prevPostsInfo,
-        username: response.data.fetchedData.data[0].username,
-        videoUrls: response.data.fetchedData.data
-          .filter((item: any) => item.media_type === "VIDEO")
-          .map((item: any) => item.media_url),
-        imageUrls: response.data.fetchedData.data
-          .filter((item: any) => item.media_type === "IMAGE")
-          .map((item: any) => item.media_url),
-      };
-    });
+      setArePostsExtracted(true);
+      // console.log(response.data.fetchedData);
+      setPostsInfo((prevPostsInfo) => {
+        return {
+          ...prevPostsInfo,
+          username: response.data.fetchedData.data[0].username,
+          videoUrls: response.data.fetchedData.data
+            .filter((item: any) => item.media_type === "VIDEO")
+            .map((item: any) => item.media_url),
+          imageUrls: response.data.fetchedData.data
+            .filter((item: any) => item.media_type === "IMAGE")
+            .map((item: any) => item.media_url),
+        };
+      });
+    } catch (error: any) {
+      console.log(error.message);
+    }
   };
 
   const openNewWindow = (url: string, width: number, height: number) => {
@@ -66,11 +62,15 @@ const Detection: React.FC = () => {
 
   const getInstagramAccessHandler = async () => {
     try {
+      setIsLoading(true);
       setIsClicked(true);
       const appId = process.env.REACT_APP_APP_ID_KEY;
       const redirectUri = process.env.REACT_APP_REDIRECT_URI;
       let url = `https://api.instagram.com/oauth/authorize?client_id=${appId}&redirect_uri=${redirectUri}&scope=user_profile,user_media&response_type=code`;
       openNewWindow(url, 600, 600);
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 10000);
     } catch (error) {
       console.log(error);
     }
@@ -78,20 +78,22 @@ const Detection: React.FC = () => {
 
   const sendDataToServer = async () => {
     try {
+      setIsLoading(true);
       const tempToken = localStorage.getItem("token");
-      const response: any = await axios.post(
-        "http://127.0.0.1:5000/detection",
-        {
-          video_url: postsInfo.videoUrls[0],
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${tempToken}`,
-          },
-        }
-      );
+      // const response: any = await axios.post(
+      //   "http://127.0.0.1:5000/detection",
+      //   {
+      //     video_url: postsInfo.videoUrls[0],
+      //   },
+      //   {
+      //     headers: {
+      //       Authorization: `Bearer ${tempToken}`,
+      //     },
+      //   }
+      // );
 
-      setResult(response);
+      setResult([0, 0, 0, 0, 0, 1, 1, 0]);
+      setIsLoading(false);
     } catch (error: any) {
       console.log(error.message);
     }
@@ -100,15 +102,7 @@ const Detection: React.FC = () => {
   return (
     <MainContainer>
       <Container style={{ marginTop: "16px", marginBottom: "56px" }}>
-        <Typography
-          fontWeight="bold"
-          variant="h2"
-          style={{ marginTop: "36px", marginBottom: "26px" }}
-          fontFamily={"'Rubik', sans-serif"}
-        >
-          Detection Scanner 🔍
-        </Typography>
-        <Divider />
+        <Title />
         {!isClicked && !arePostsExtracted && (
           <Instructions onAccessClick={getInstagramAccessHandler} />
         )}
@@ -122,121 +116,33 @@ const Detection: React.FC = () => {
               mx: "auto",
             }}
           >
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              sx={{ mt: "12px" }}
-              onClick={extractPostsHandler}
-            >
-              Extract Posts
-            </Button>
+            {isLoading ? (
+              <CircularProgress
+                size={64}
+                sx={{ color: "#15b8ff", mx: "auto" }}
+              />
+            ) : (
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                sx={{ mt: "12px" }}
+                onClick={extractPostsHandler}
+              >
+                Extract Posts
+              </Button>
+            )}
           </Box>
         )}
-        {isClicked && arePostsExtracted && (
-          <>
-            <Typography
-              fontWeight="bold"
-              variant="h5"
-              style={{
-                marginTop: "36px",
-                marginBottom: "86px",
-                textDecoration: "underline",
-              }}
-              fontFamily={"'Rubik', sans-serif"}
-            >
-              Profile History Stats
-            </Typography>
-            <Grid container spacing={20} style={{ marginBottom: "56px" }}>
-              <Grid item xs={12} md={3}>
-                <Card sx={{ bgcolor: "#F1B000", color: "#333" }}>
-                  <CardActionArea>
-                    <AccountCircleIcon style={{ fontSize: 80 }} />
-                    <CardContent>
-                      <Typography gutterBottom variant="h6" component="div">
-                        Username
-                      </Typography>
-                      <Typography variant="h6" color="text.secondary">
-                        {postsInfo.username}
-                      </Typography>
-                    </CardContent>
-                  </CardActionArea>
-                </Card>
-              </Grid>
-              <Grid item xs={12} md={3}>
-                <Card sx={{ bgcolor: "#319938", color: "#333" }}>
-                  <CardActionArea>
-                    <ImageIcon style={{ fontSize: 80 }} />
-                    <CardContent>
-                      <Typography gutterBottom variant="h6" component="div">
-                        No. of Images
-                      </Typography>
-                      <Typography variant="h6" color="text.secondary">
-                        {postsInfo.imageUrls.length}
-                      </Typography>
-                    </CardContent>
-                  </CardActionArea>
-                </Card>
-              </Grid>
-              <Grid item xs={12} md={3}>
-                <Card sx={{ bgcolor: "#00adec", color: "#333" }}>
-                  <CardActionArea>
-                    <OndemandVideoIcon style={{ fontSize: 80 }} />
-                    <CardContent>
-                      <Typography gutterBottom variant="h6" component="div">
-                        No. of Videos
-                      </Typography>
-                      <Typography variant="h6" color="text.secondary">
-                        {postsInfo.videoUrls.length}
-                      </Typography>
-                    </CardContent>
-                  </CardActionArea>
-                </Card>
-              </Grid>
-              <Grid item xs={12} md={3}>
-                <Card sx={{ bgcolor: "#b2ec73", color: "#333" }}>
-                  <CardActionArea>
-                    <DynamicFeedIcon style={{ fontSize: 80 }} />
-                    <CardContent>
-                      <Typography gutterBottom variant="h6" component="div">
-                        Total Posts
-                      </Typography>
-                      <Typography variant="h6" color="text.secondary">
-                        {postsInfo.videoUrls.length +
-                          postsInfo.imageUrls.length}
-                      </Typography>
-                    </CardContent>
-                  </CardActionArea>
-                </Card>
-              </Grid>
-            </Grid>
-            <Divider />
-            {!result && (
-              <>
-                <Typography
-                  fontWeight="bold"
-                  variant="h5"
-                  style={{
-                    marginTop: "36px",
-                    marginBottom: "36px",
-                    textDecoration: "underline",
-                  }}
-                  fontFamily={"'Rubik', sans-serif"}
-                >
-                  Activate Our Algorithm
-                </Typography>
-                <Button
-                  type="submit"
-                  variant="contained"
-                  color="primary"
-                  sx={{ mt: "12px" }}
-                  onClick={sendDataToServer}
-                >
-                  Start Scanning Your Profile For Violence
-                </Button>
-              </>
-            )}
-          </>
+        {isClicked && arePostsExtracted && <ProfileStats {...postsInfo} />}
+        {isClicked && arePostsExtracted && result.length === 0 && (
+          <ActivationButton
+            isLoading={isLoading}
+            sendDataToServer={sendDataToServer}
+          />
+        )}
+        {isClicked && arePostsExtracted && result.length !== 0 && (
+          <ResultsPage result={result} />
         )}
       </Container>
     </MainContainer>

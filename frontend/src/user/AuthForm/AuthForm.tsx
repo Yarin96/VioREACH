@@ -61,6 +61,9 @@ const Auth = () => {
   return (
     <MainContainer>
       {error && <ErrorModal error={error} onClear={clearErrorHandler} />}
+      <br />
+      <br />
+      <br />
       <Form method="post">
         <Container
           style={{
