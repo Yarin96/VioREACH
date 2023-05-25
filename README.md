@@ -1,62 +1,81 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-    <img src="frontend/public/assets/VioREACH.png" alt="vioreach" width="400" height="350"/>
+    <a href="#">
+     <img src="frontend/public/assets/VioREACH.png" alt="vioreach" width="430" height="220" style="pointer-events: none;" />
+    </a>
+    <h2>- Violence Detection On Social Media -</h2>
 </div>
 
-<!-- TABLE OF CONTENTS -->
-<details>
-  <summary>Table of Contents</summary>
-  <ol>
-    <li>
-      <a href="#about-the-project">About The Project</a>
-      <ul>
-        <li><a href="#built-with">Built With</a></li>
-      </ul>
-    </li>
-    <li>
-      <a href="#getting-started">Getting Started</a>
-      <ul>
-        <li><a href="#installation">Installation</a></li>
-      </ul>
-    </li>
-    <li><a href="#usage">Usage</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
-    <li><a href="#contact">Contact</a></li>
-  </ol>
-</details>
+<br />
 
 <!-- ABOUT THE PROJECT -->
-
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
+The fact that many young people and children spend a lot of time in front of screens in modern society is nothing new.
+They spend much of their screen time on social media where they are exposed to explicit content including violence, bullying and exclusion.
+Our final project aims to create a platform that allows concerned parents to track and monitor their children's behavior and involvement in such acts of violence, by giving us a permission to scan posts and videos of their children Instagram accounts.
+By using computer vision and machine learning tools to scan for and recognize signs of violence, we believe we can increase parental awareness and reduce incidents like this.
 
-There are many great README templates available on GitHub; however, I didn't find one that really suited my needs so I created this enhanced one. I want to create a README template so amazing that it'll be the last one you ever need -- I think this is it.
+<br />
 
-Here's why:
+---
 
-- Your time should be focused on creating something amazing. A project that solves a problem and helps others
-- You shouldn't be doing the same tasks over and over like creating a README from scratch
-- You should implement DRY principles to the rest of your life :smile:
+<br />
 
-Of course, no one template will serve all projects since your needs may be different. So I'll be adding more in the near future. You may also suggest changes by forking this repo and creating a pull request or opening an issue. Thanks to all the people have contributed to expanding this template!
+### Sneak Peek Images and Videos:
 
-Use the `BLANK_README.md` to get started.
+*Will be edited further in the near future*
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+<br />
 
-### Built With
+---
 
-This section should list any major frameworks/libraries used to bootstrap your project. Leave any add-ons/plugins for the acknowledgements section. Here are a few examples.
+<br />
 
-- [![Next][Next.js]][Next-url]
-- [![React][React.js]][React-url]
-- [![Vue][Vue.js]][Vue-url]
-- [![Angular][Angular.io]][Angular-url]
-- [![Svelte][Svelte.dev]][Svelte-url]
-- [![Laravel][Laravel.com]][Laravel-url]
-- [![Bootstrap][Bootstrap.com]][Bootstrap-url]
-- [![JQuery][JQuery.com]][JQuery-url]
+### The Monitoring Process (Look Behind the Scenes):
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+*Will be edited further in the near future*
+
+<br />
+
+---
+
+<br />
+
+### Features Included:
+
+*Will be edited further in the near future*
+
+<br />
+
+---
+
+<br />
+
+### Technologies Stack:
+
+* The table below contains all the technologies used for the VioREACH integration:
+
+
+| Field                     | Stack                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Frontend Development         | ![React](https://img.shields.io/badge/React-61DAFB?logo=React&logoColor=white&style=for-the-badge)  ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)    ![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E) ![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white)  ![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white)  ![MUI](https://img.shields.io/badge/MUI-%230081CB.svg?style=for-the-badge&logo=mui&logoColor=white)                                                                                                                                                                                                                                                                                                                                          |
+| Backend Development           | ![Node.js](https://img.shields.io/badge/Node.js-339933?logo=Node.js&logoColor=white&style=for-the-badge) ![Express](https://img.shields.io/badge/Express-000000?logo=Express&logoColor=white&style=for-the-badge) ![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54) ![Flask](https://img.shields.io/badge/flask-%23000.svg?style=for-the-badge&logo=flask&logoColor=white)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| Databases                    | ![MongoDB](https://img.shields.io/badge/MongoDB-47A248?logo=MongoDB&logoColor=white&style=for-the-badge)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| AI/ML                        | ![TensorFlow](https://img.shields.io/badge/TensorFlow-%23FF6F00.svg?style=for-the-badge&logo=TensorFlow&logoColor=white) ![Pandas](https://img.shields.io/badge/pandas-%23150458.svg?style=for-the-badge&logo=pandas&logoColor=white) ![NumPy](https://img.shields.io/badge/numpy-%23013243.svg?style=for-the-badge&logo=numpy&logoColor=white) ![Keras](https://img.shields.io/badge/Keras-%23D00000.svg?style=for-the-badge&logo=Keras&logoColor=white) ![Matplotlib](https://img.shields.io/badge/Matplotlib-%23ffffff.svg?style=for-the-badge&logo=Matplotlib&logoColor=black) ![scikit-learn](https://img.shields.io/badge/scikit--learn-%23F7931E.svg?style=for-the-badge&logo=scikit-learn&logoColor=white) ![OpenCV](https://img.shields.io/badge/OpenCV-F78C40?logo=OpenCV&logoColor=white&style=for-the-badge)|
+| IDE's                       | ![VisualStudioCode](https://img.shields.io/badge/Visual%20Studio%20Code-007acc?logo=Visual%20Studio%20Code&logoColor=white&style=for-the-badge) ![Pycharm](https://img.shields.io/badge/Pycharm-000000?logo=Pycharm&logoColor=white&style=for-the-badge)                                                                                                                                                 |
+| Others                        | ![NPM](https://img.shields.io/badge/NPM-%23CB3837.svg?style=for-the-badge&logo=npm&logoColor=white) ![Git](https://img.shields.io/badge/git-%23F05033.svg?style=for-the-badge&logo=git&logoColor=white) |
+
+<br />
+
+---
+
+<br />
+
+### About Us:
+
+*Will be edited further in the near future*
+
+<br />
+
