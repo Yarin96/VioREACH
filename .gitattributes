@@ -1,0 +1,3 @@
+*.pb linguist-detection=false
+*.pbi linguist-detection=false
+*.pbf linguist-detection=false
