@@ -12,7 +12,7 @@ from sklearn.metrics import classification_report
 import pickle
 
 
-input_dir = "BloodDetection/data/"
+input_dir = f"{os.getcwd()}/data/"
 categories = ['Blood', 'NoBlood']
 
 
@@ -63,13 +63,13 @@ def reuse_model(img_path):
     """Enter the directory"""
     # x_train, x_test, y_train, y_test = set_data()
     # to load the model:
-    model = pickle.load(open("BloodDetection/model.p", "rb"))
+    main_directory = os.getcwd().replace("\\", "/")
+    model = pickle.load(open(f"{main_directory}/Classifiers/BloodDetection/model.p", "rb"))
     img = imread(img_path)
     img = resize(img, (15, 15))
     img = [img.flatten()]
     img = np.asarray(img)
     return predict_model(img, model)
-
 
 
 

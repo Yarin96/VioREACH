@@ -26,7 +26,7 @@ def define_tree(dataset):
     clf.fit(X_train, y_train)
     y_pred = clf.predict(X_test)
     print_stats(clf, y_test, y_pred, X_test)
-    pickle.dump(clf, open('rt.pkl', 'wb'))
+    pickle.dump(clf, open(f'{os.getcwd()}/rt.pkl', 'wb'))
 
 
 def print_stats(model, yt, yp, xt):
@@ -36,13 +36,13 @@ def print_stats(model, yt, yp, xt):
     print(f"Cross values score: {cross_val_score(model, xt, yt, cv=10)}")
 
 
-def reuse_model(name, prediction):
-    saved_model = pickle.load(open(f'RandomForest/{name}.pkl', 'rb'))
+def reuse_model(prediction):
+    saved_model = pickle.load(open(f'{os.getcwd()}/rt.pkl', 'rb'))
     print(saved_model.predict(prediction))
 
 
 def activation(vector):
     # define_tree("features.csv")
     vector_df = pd.DataFrame(vector, columns=["weapons", "fight", "yell", "throw", "crowdiness", "Fast Moves", "Blood"])
-    reuse_model("rt", vector_df)
+    reuse_model(vector_df)
 
