@@ -28,11 +28,9 @@ def frame_capture(path):
     try:
         os.mkdir(fullDir)
     except:
-        print("Video already analyzed")
         return
     # Used as counter variable
     count = 1
-
     # checks whether frames were extracted
     success = 1
 
@@ -47,30 +45,43 @@ def frame_capture(path):
         count += 1
 
 
-def define_and_predict_yolov8(videoToPredict):
+def define_and_predict_yolov8(videoToPredict, weights):
     """ Define the model, predict and save the outcome into txt files given a video
     Calls the function to extract frames from the video"""
-    print("Making a detection..")
     main_directory = os.getcwd().replace("\\", "/")
-    model = yolo(f"{main_directory}/YOLOv8Extraction/Violence_best.pt")
+    model = yolo(f"{main_directory}/YOLOv8Extraction/{weights}.pt")
     model.to("cuda")
     frame_capture(videoToPredict)
+    print("Making a detection..")
     model.predict(videoToPredict, save=True, save_txt=True)
     src = f"{main_directory}/runs/detect/predict"
-    os.mkdir(f"{main_directory}/YOLOv8Extraction/VideosPredictionsOutputs/" + videoToPredict[:str.rfind(videoToPredict, ".")])
-    dst = f"{main_directory}/YOLOv8Extraction/VideosPredictionsOutputs/" + videoToPredict[:str.rfind(videoToPredict, ".")]
-    allfiles = os.listdir(src)
-    for file in allfiles:
-        src_path = os.path.join(src, file)
-        dst_path = os.path.join(dst, file)
-        os.rename(src_path, dst_path)
-    os.rmdir(src)
+    if weights == "Violence_best":
+        os.mkdir(f"{main_directory}/YOLOv8Extraction/VideosPredictionsOutputs/" + videoToPredict[:str.rfind(videoToPredict, ".")])
+        dst = f"{main_directory}/YOLOv8Extraction/VideosPredictionsOutputs/" + videoToPredict[:str.rfind(videoToPredict, ".")]
+        allfiles = os.listdir(src)
+        for file in allfiles:
+            src_path = os.path.join(src, file)
+            dst_path = os.path.join(dst, file)
+            os.rename(src_path, dst_path)
+        os.rmdir(src)
+    else:
+        os.mkdir(f"{main_directory}/YOLOv8Extraction/VideosCrowdednessOutputs/" + videoToPredict[
+                                                                                  :str.rfind(videoToPredict, ".")])
+        dst = f"{main_directory}/YOLOv8Extraction/VideosCrowdednessOutputs/" + videoToPredict[
+                                                                               :str.rfind(videoToPredict, ".")]
+        allfiles = os.listdir(src)
+        for file in allfiles:
+            src_path = os.path.join(src, file)
+            dst_path = os.path.join(dst, file)
+            os.rename(src_path, dst_path)
+        os.rmdir(src)
 
 
-def get_frames_identify_vectors(videoFileName):
-    main_directory = os.getcwd().replace("\\", "/")
+
+def get_frames_identify_vectors(videoFileName, yaml_file, folder):
     """Given a video name that has been predicted, get the predictions and call a function to identify classes"""
-    directory = fr"{main_directory}/YOLOv8Extraction/VideosPredictionsOutputs/{videoFileName}/labels/"
+    main_directory = os.getcwd().replace("\\", "/")
+    directory = fr"{main_directory}/YOLOv8Extraction/{folder}/{videoFileName}/labels/"
     count = 0
     framesDetectionVectors = []
     # Iterate directory
@@ -87,7 +98,7 @@ def get_frames_identify_vectors(videoFileName):
             continue
         framesDetectionVectors.append(currentFile.readlines())
     # printing_objects(framesDetectionVectors)
-    return identify_classes(framesDetectionVectors, videoFileName)
+    return identify_classes(framesDetectionVectors, videoFileName, yaml_file)
 
 
 def show_boundingBox_image(img, top_left, bottom_right):
@@ -97,16 +108,18 @@ def show_boundingBox_image(img, top_left, bottom_right):
     cv2.destroyAllWindows()
 
 
-def identify_classes(processed_frames, videoFileName):
+def identify_classes(processed_frames, videoFileName, yaml_file):
     main_directory = os.getcwd().replace("\\", "/")
-    yolo_classes = open(f"{main_directory}/YOLOv8Extraction/data.yaml", encoding="utf8")
+    yolo_classes = open(f"{main_directory}/YOLOv8Extraction/{yaml_file}.yaml", encoding="utf8")
     names = yaml.safe_load(yolo_classes)["names"]
     foundClasses = []
     boundingBoxes = []
     objsInFrame = []
     LocationOfObj = []
+    only_classes_all_frames = []
     ans_value = 0
     for frame in processed_frames:
+        current_frame = []
         for obj in frame:
             objClass = int(obj.split()[0])
             centerXcor, centerYcor, normalizedWidth, normalizedHeight = obj.split()[1:]
@@ -116,10 +129,13 @@ def identify_classes(processed_frames, videoFileName):
                                   {"normalizedWidth": float(normalizedWidth)},
                                   {"normalizedHeight": float(normalizedHeight)}])
             objsInFrame.append({objClass: names[objClass]})
-            if names[objClass] == "Violence" and ans_value == 0:
-                ans_value = 1
+            current_frame.append(names[objClass])
+            if yaml_file == "data":
+                if names[objClass] == "Violence" and ans_value == 0:
+                    ans_value = 1
         foundClasses.append(objsInFrame)
         boundingBoxes.append(LocationOfObj)
+        only_classes_all_frames.append(current_frame)
         objsInFrame = []
         LocationOfObj = []
     real_bounding_boxes = []
@@ -149,9 +165,25 @@ def identify_classes(processed_frames, videoFileName):
 
         real_bounding_boxes.append(one_frame_objs)
         one_frame_objs = []
+    if yaml_file == "coco8":
+        # used a new array even though we could reuse one, because test for the crowdedness dont need the actual location
+        # in the photo, just the exsistance, and some images wont load, so we still test for crowdedness in those
+        for frame in only_classes_all_frames:
+            count = 0
+            for find in frame:
+                if count > 4:
+                    ans_value = 1
+                    break
+                if find == "person":
+                    count += 1
+            if ans_value == 1:
+                break
 
-    # print(real_bounding_boxes)
-    return ans_value, real_bounding_boxes
+
+    if yaml_file == "coco8":
+        return ans_value
+    else:
+        return ans_value, real_bounding_boxes
 
 
 def train_model(yaml_file, epochs):
@@ -161,15 +193,32 @@ def train_model(yaml_file, epochs):
 
 
 def active_detection(video):
+    # yaml_file for violence = data | yaml_file for crowd = coco8
+    # weights file for violence = Violence_best | weights file for violence = yolov8s
     # first_time_setups()
+    violence_weights = "Violence_best"
+    violence_yaml_file = "data"
+    crowdedness_weights = "yolov8s"
+    crowdedness_yaml_file = "coco8"
+    folder_for_crowd_outputs = "VideosCrowdednessOutputs"
+    folder_for_violence_outputs = "VideosPredictionsOutputs"
     main_directory = os.getcwd().replace("\\", "/")
     if os.path.exists(f"{main_directory}/runs/detect/predict"):
         os.rmdir(f"{main_directory}/runs/detect/predict")
     if os.path.exists(f"{main_directory}/YOLOv8Extraction/VideosFramesOutputs/{video[:str.rfind(video, '.')]}"):
         print("Video already detected")
         return
+    # Detect for violence
     videoFileForFrames = video[:str.rfind(video, ".")]
-    define_and_predict_yolov8(video)  # gets the full file name
+    define_and_predict_yolov8(video, violence_weights)  # gets the full file name
     if os.path.exists(f"{main_directory}/runs"):
         shutil.rmtree(f"{main_directory}/runs")
-    return get_frames_identify_vectors(videoFileForFrames)
+    violence_value, real_bounding_boxes = get_frames_identify_vectors(videoFileForFrames, violence_yaml_file, folder_for_violence_outputs)
+    # If ciolence found detect for crowdedness
+    if violence_value == 1:
+        define_and_predict_yolov8(video, crowdedness_weights)  # gets the full file name
+        if os.path.exists(f"{main_directory}/runs"):
+            shutil.rmtree(f"{main_directory}/runs")
+        crowdedness_value = get_frames_identify_vectors(videoFileForFrames, crowdedness_yaml_file, folder_for_crowd_outputs)
+
+    return violence_value, crowdedness_value, real_bounding_boxes
