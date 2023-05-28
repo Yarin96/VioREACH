@@ -42,5 +42,5 @@ def reuse_model(prediction):
 def activation(vector):
     # direc = f'{os.getcwd()}/features.csv'
     # define_xgboost(direc)
-    vector_df = pd.DataFrame(vector, columns=["weapons", "yell", "throw", "crowdiness", "Fast Moves", "Blood", "violence"])
+    vector_df = pd.DataFrame(vector, columns=["crowdiness", "Fast Moves", "Blood", "violence"])
     return reuse_model(vector_df)

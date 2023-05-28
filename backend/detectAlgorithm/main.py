@@ -37,9 +37,9 @@ def detect_blood(video, vector, yolo_detections, directory):
         if not os.path.isfile(imgSrc):
             continue
         pred = bloodDetection.reuse_model(imgSrc)[0]
-        if vector[5] == 0 and pred == 1:
+        if vector[2] == 0 and pred == 1:
             # if found blood on one frame update the value and stop looking for new frame
-            vector[5] = 1
+            vector[2] = 1
             break
     return vector
 
@@ -64,7 +64,7 @@ def cleanups(directory, file):
 
 
 def print_currect_detections(vector):
-    detection_classes = ["weapons", "yell", "throw", "crowdiness", "Fast Moves", "Blood", "violence"]
+    detection_classes = ["crowdiness", "Fast Moves", "Blood", "violence"]
     for i, detection_class in enumerate(detection_classes):
         if vector[i] == 0:
             out = "No detection."
@@ -78,21 +78,21 @@ if __name__ == "__main__":
     main_directory = os.getcwd().replace("\\", "/")
     # first_time_setups()
     videoFile = "V_104.mp4"
-    # ["weapons", "yell", "throw", "crowdiness", "Fast Moves", "Blood", "violence"]
-    ans_vector = [0, 0, 0, 0, 0, 0, 0]
+    # ["crowdiness", "Fast Moves", "Blood", "violence"]
+    ans_vector = [0, 0, 0, 0]
     try:
-        ans_vector[6], ans_vector[3], yolo_detec = yoloModule.active_detection(videoFile)
+        ans_vector[3], ans_vector[0], yolo_detec = yoloModule.active_detection(videoFile)
         print_currect_detections(ans_vector)
     except TypeError:
         exit()
     except FileNotFoundError:
         print("No input video identified. check directory!")
         exit()
-    if ans_vector[6] == 1:
+    if ans_vector[3] == 1:
         # Only if YOLO identified violence continue to the other classifiers
         yolo_detec = get_only_violence_detections(yolo_detec)
         ans_vector = detect_blood(videoFile, ans_vector, yolo_detec, main_directory)
-        ans_vector[4] = pose.pose_activation(videoFile)
+        ans_vector[1] = pose.pose_activation(videoFile)
         # After alll classifier worked:
         ans_vector = [ans_vector]
         ans_vector[0].append(sc.activation(ans_vector)[0])
