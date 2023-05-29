@@ -5,6 +5,13 @@ interface resultsProps {
 }
 
 const ResultsPage: React.FC<resultsProps> = (props) => {
+  const detections: string[] = ["Crowdedness", "Fast Moves", "Blood Presence"];
+  const levelsOfViolence: string[] = [
+    "Low level of violence detected!",
+    "Medium level of violence detected!",
+    "High level of violence detected!",
+  ];
+
   return (
     <>
       <Grid
@@ -32,19 +39,33 @@ const ResultsPage: React.FC<resultsProps> = (props) => {
           </Typography>
         </Grid>
         <Grid item xs={12} md={3}>
-          {props.result[props.result.length - 1] === 1 ? (
-            <Typography
-              fontWeight="bold"
-              variant="h6"
-              style={{
-                marginTop: "16px",
-                marginBottom: "36px",
-                color: "red",
-              }}
-              fontFamily={"'Rubik', sans-serif"}
-            >
-              Violence Detected!
-            </Typography>
+          {props.result[props.result.length - 1] !== 0 ? (
+            <>
+              <Typography
+                fontWeight="bold"
+                variant="h6"
+                style={{
+                  marginTop: "16px",
+                  marginBottom: "36px",
+                  color: "red",
+                }}
+                fontFamily={"'Rubik', sans-serif"}
+              >
+                Violence Detected!
+              </Typography>
+              <ul>
+                {props.result.map((value, index) => {
+                  if (index === props.result.length - 1) {
+                    const violenceLevel = levelsOfViolence[value - 1];
+                    return <li key={index}>{violenceLevel}</li>;
+                  } else if (value === 1) {
+                    const detectionText = `Detected ${detections[index]}.`;
+                    return <li key={index}>{detectionText}</li>;
+                  }
+                  return null;
+                })}
+              </ul>
+            </>
           ) : (
             <Typography
               fontWeight="bold"

@@ -92,7 +92,8 @@ const Detection: React.FC = () => {
         }
       );
 
-      setResult([0, 0, 0, 0, 0, 1, 1, 0]);
+      console.log(response.data);
+      setResult(response.data.result);
       setIsLoading(false);
     } catch (error: any) {
       console.log(error.message);
