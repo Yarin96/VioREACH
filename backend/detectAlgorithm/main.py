@@ -1,9 +1,13 @@
-import YOLOv8Extraction.Yolov8 as yoloModule
-import backend.detectAlgorithm.Classifiers.BloodDetection.BloodSVM as bloodDetection
-import StackingClassifier.StackClassifier as sc
-import PoseEstimation.MultiPersonPose as pose
+# import YOLOv8Extraction.Yolov8 as yoloModule
+# import Classifiers.BloodDetection.BloodSVM as bloodDetection
+# import StackingClassifier.StackClassifier as xgb
+# import PoseEstimation.MultiPersonPose as pose
 import os
 import shutil
+# --------------------------------
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+from urllib.request import urlretrieve
 
 
 """
@@ -73,11 +77,10 @@ def print_currect_detections(vector):
         print(f"Class: {detection_class} | Findings: {out}")
 
 
-if __name__ == "__main__":
+def activate(videoFile):
     classes = {0: "No Violence detected", 1: "Light violence detected", 2: "Medium violence detected", 3: "Hard Violence detected"}
     main_directory = os.getcwd().replace("\\", "/")
     # first_time_setups()
-    videoFile = "V_104.mp4"
     # ["crowdiness", "Fast Moves", "Blood", "violence"]
     ans_vector = [0, 0, 0, 0]
     try:
@@ -88,6 +91,10 @@ if __name__ == "__main__":
     except FileNotFoundError:
         print("No input video identified. check directory!")
         exit()
+    # TODO: check the correct error and change it below
+    except Exception:
+        ans_vector[0] = 0
+
     if ans_vector[3] == 1:
         # Only if YOLO identified violence continue to the other classifiers
         yolo_detec = get_only_violence_detections(yolo_detec)
@@ -95,11 +102,34 @@ if __name__ == "__main__":
         ans_vector[1] = pose.pose_activation(videoFile)
         # After alll classifier worked:
         ans_vector = [ans_vector]
-        ans_vector[0].append(sc.activation(ans_vector)[0])
+        ans_vector[0].append(xgb.activation(ans_vector)[0])
         ans_vector = ans_vector[0]
         print("Final vector:")
         print_currect_detections(ans_vector)
         print(classes[ans_vector[-1]])
     cleanups(main_directory, videoFile)
+    return ans_vector
 
+# --------------------------------
+
+app = Flask(__name__)
+CORS(app, supports_credentials=True)
+
+# Videos API Route
+@app.route("/detection", methods=["POST"])
+def detect_video():
+    if request.method == 'POST':
+        data = request.get_json()
+        video_url = str(data.get('video_url'))
+        # Download the video from the URL and save it to a local file as MP4 file
+        video_file_path = os.path.join('D:/ViolenceDetectionProject/backend/detectAlgorithm/video.mp4')
+        urlretrieve(video_url, video_file_path)
+        # result = activate(video_file_path)
+        return jsonify({'result': [1, 1, 0, 2]})
+    else:
+        return jsonify({'error': 'Invalid request'})
+    
+
+if __name__ == "__main__":
+    app.run(port=5000)
 
