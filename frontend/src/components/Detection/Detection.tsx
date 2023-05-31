@@ -83,7 +83,8 @@ const Detection: React.FC = () => {
       const response: any = await axios.post(
         "http://127.0.0.1:5000/detection",
         {
-          video_url: postsInfo.videoUrls[0],
+          // 10 - VIOLENCE, 4 - NONVIOLENCE
+          video_url: postsInfo.videoUrls[10],
         },
         {
           headers: {

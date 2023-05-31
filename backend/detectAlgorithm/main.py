@@ -1,7 +1,7 @@
-# import YOLOv8Extraction.Yolov8 as yoloModule
-# import Classifiers.BloodDetection.BloodSVM as bloodDetection
-# import StackingClassifier.StackClassifier as xgb
-# import PoseEstimation.MultiPersonPose as pose
+import YOLOv8Extraction.Yolov8 as yoloModule
+import Classifiers.BloodDetection.BloodSVM as bloodDetection
+import StackingClassifier.StackClassifier as xgb
+import PoseEstimation.MultiPersonPose as pose
 import os
 import shutil
 # --------------------------------
@@ -10,18 +10,10 @@ from flask_cors import CORS
 from urllib.request import urlretrieve
 
 
-"""
-TODOS:
-1. delete unused features from the table for the XGboost
-2. connect the front to this file
-3. optional: add crwodness detection, calculations to the pose estimaion, audio detection, sentiment analysis..
-4. maybe check that the weight for each feature is good
-
-"""
-
 
 def detect_blood(video, vector, yolo_detections, directory):
     imgs_dir = f"{directory}/YOLOv8Extraction/VideosFramesOutputs/{video[:str.rfind(video, '.')]}/"
+    print("Checking for blood for every images containing violence")
     count = 0
     for path in os.listdir(imgs_dir):
         # check if current path is a file
@@ -57,14 +49,15 @@ def get_only_violence_detections(arr):
     return only_violence
 
 
-def cleanups(directory, file):
+def cleanups(directory, file, violnece_val):
+    if violnece_val != 0:
+        crowdednessDir = f"{directory}/YOLOv8Extraction/VideosCrowdednessOutputs/" + file[:str.rfind(file, '.')]
+        shutil.rmtree(crowdednessDir)
     framesDir = f"{directory}/YOLOv8Extraction/VideosFramesOutputs/" + file[:str.rfind(file, '.')]
     predictionsDir = f"{directory}/YOLOv8Extraction/VideosPredictionsOutputs/" + file[:str.rfind(file, '.')]
-    crowdednessDir = f"{directory}/YOLOv8Extraction/VideosCrowdednessOutputs/" + file[:str.rfind(file, '.')]
     shutil.rmtree(framesDir)
     shutil.rmtree(predictionsDir)
-    shutil.rmtree(crowdednessDir)
-
+    os.remove(f"{directory}/{file}")
 
 
 def print_currect_detections(vector):
@@ -91,8 +84,7 @@ def activate(videoFile):
     except FileNotFoundError:
         print("No input video identified. check directory!")
         exit()
-    # TODO: check the correct error and change it below
-    except Exception:
+    except UnboundLocalError:
         ans_vector[0] = 0
 
     if ans_vector[3] == 1:
@@ -107,13 +99,17 @@ def activate(videoFile):
         print("Final vector:")
         print_currect_detections(ans_vector)
         print(classes[ans_vector[-1]])
-    cleanups(main_directory, videoFile)
+    if ans_vector[-1] == 0:
+        ans_vector.append(0)
+    cleanups(main_directory, videoFile, ans_vector[-1])
     return ans_vector
 
 # --------------------------------
 
+
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
+
 
 # Videos API Route
 @app.route("/detection", methods=["POST"])
@@ -121,11 +117,15 @@ def detect_video():
     if request.method == 'POST':
         data = request.get_json()
         video_url = str(data.get('video_url'))
+        main_directory = os.getcwd().replace("\\", "/")
         # Download the video from the URL and save it to a local file as MP4 file
-        video_file_path = os.path.join('D:/ViolenceDetectionProject/backend/detectAlgorithm/video.mp4')
+        video_file_path = os.path.join(f'{main_directory}/video.mp4')
         urlretrieve(video_url, video_file_path)
-        # result = activate(video_file_path)
-        return jsonify({'result': [1, 1, 0, 2]})
+        result = activate("video.mp4")
+        print("\n==========================================================================================\n")
+        print(result)
+        result = list(map(int, result))
+        return jsonify({'result': result})
     else:
         return jsonify({'error': 'Invalid request'})
     

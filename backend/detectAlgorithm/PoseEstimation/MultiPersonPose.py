@@ -135,6 +135,7 @@ def pose_estimation(input_video):
     # When everything done, release the video capture object
     cap.release()
     cv2.destroyAllWindows()
+    print("===============Finished pose analysis================")
     return detected_anomally
     # Closes all the frames
 
