@@ -84,7 +84,7 @@ const Detection: React.FC = () => {
         "http://127.0.0.1:5000/detection",
         {
           // 10 - VIOLENCE, 4 - NONVIOLENCE
-          video_url: postsInfo.videoUrls[10],
+          video_url: postsInfo.videoUrls[4],
         },
         {
           headers: {
