@@ -73,6 +73,16 @@ By using computer vision and machine learning tools to scan for and recognize si
 
 <br />
 
+### To Do List (Bugs & Improvements):
+
+*Will be edited further in the near future*
+
+<br />
+
+---
+
+<br />
+
 ### About Us:
 
 *Will be edited further in the near future*
