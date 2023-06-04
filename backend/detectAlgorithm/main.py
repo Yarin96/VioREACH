@@ -94,13 +94,11 @@ def activate(videoFile):
         ans_vector[1] = pose.pose_activation(videoFile)
         # After alll classifier worked:
         ans_vector = [ans_vector]
-        ans_vector[0].append(xgb.activation(ans_vector)[0])
+        ans_vector[0][-1] = xgb.activation(ans_vector)[0]
         ans_vector = ans_vector[0]
         print("Final vector:")
         print_currect_detections(ans_vector)
         print(classes[ans_vector[-1]])
-    if ans_vector[-1] == 0:
-        ans_vector.append(0)
     cleanups(main_directory, videoFile, ans_vector[-1])
     return ans_vector
 
