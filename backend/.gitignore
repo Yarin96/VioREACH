@@ -28,3 +28,6 @@ runs
 nodemon.json
 certificates/
 runs
+
+package-lock.json
+package.json

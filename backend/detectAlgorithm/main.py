@@ -1,7 +1,7 @@
-# import YOLOv8Extraction.Yolov8 as yoloModule
-# import Classifiers.BloodDetection.BloodSVM as bloodDetection
-# import StackingClassifier.StackClassifier as xgb
-# import PoseEstimation.MultiPersonPose as pose
+import YOLOv8Extraction.Yolov8 as yoloModule
+import Classifiers.BloodDetection.BloodSVM as bloodDetection
+import StackingClassifier.StackClassifier as xgb
+import PoseEstimation.MultiPersonPose as pose
 import os
 import shutil
 # --------------------------------
@@ -116,18 +116,17 @@ def detect_video():
         data = request.get_json()
         video_url = str(data.get('video_url'))
         main_directory = os.getcwd().replace("\\", "/")
-        # Download the video from the URL and save it to a local folder as MP4 file
+        # Download the video from the URL and save it to a local file as MP4 file
         video_file_path = os.path.join(f'{main_directory}/video.mp4')
         urlretrieve(video_url, video_file_path)
-        # result = activate("video.mp4")
+        result = activate("video.mp4")
         print("\n==========================================================================================\n")
-        # print(result)
-        # result = list(map(int, result))
-        return jsonify({'result': [0, 0, 0, 1]})
+        print(result)
+        result = list(map(int, result))
+        return jsonify({'result': result})
     else:
         return jsonify({'error': 'Invalid request'})
     
 
 if __name__ == "__main__":
     app.run(port=5000)
-
