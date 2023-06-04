@@ -26,7 +26,10 @@ By using computer vision and machine learning tools to scan for and recognize si
 
 ### Sneak Peek Images and Videos 🔎:
 
-_Will be edited further in the near future_
+<br />
+
+https://github.com/Yarin96/VioREACH/assets/94289687/db28f7b6-f808-42dd-a781-a623231d9236
+
 
 <br />
 
