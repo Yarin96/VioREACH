@@ -53,7 +53,10 @@ _Will be edited further in the near future_
 ### Features Included 🚀:
 
 - Full integration with the Instagram Basic Display API.
--
+- Creating a MongoDB schema with Mongoose framework.
+- Implementation of JWT encryption/decryption on sign-up and login pages.
+- Third-party library 'axios' to make HTTP requests from the frontend to the backend.
+- Using Material UI components to take advantage of the built-in responsiveness of components to design the front-end website.
 
 <br />
 
@@ -94,12 +97,10 @@ _Will be edited further in the future if neccesary_
 
 ---
 
-<br />
-
 ### Contact Us 💬:
 
-GitHub Profile: [Ben Daniels](https://github.com/Ben55565) | [LinkedIn](https://www.linkedin.com/in/bendaniels-p/) Profile
+<img src="https://github.com/Yarin96/VioREACH/assets/94289687/3beaf5a8-b687-4b44-b52e-45ab8ad8f663" width="30" height="30"> [Ben Daniels](https://github.com/Ben55565) | <img src="https://github.com/Yarin96/VioREACH/assets/94289687/796a41cd-efdb-4012-ba36-01014f12197a" width="30" height="30"> [LinkedIn](https://www.linkedin.com/in/bendaniels-p/)
 
-GitHub Profile: [Yarin Bar](https://github.com/Yarin96) | [LinkedIn](https://www.linkedin.com/in/yarinb/) Profile
+<img src="https://github.com/Yarin96/VioREACH/assets/94289687/3beaf5a8-b687-4b44-b52e-45ab8ad8f663" width="30" height="30"> [Yarin Bar](https://github.com/Yarin96) | <img src="https://github.com/Yarin96/VioREACH/assets/94289687/796a41cd-efdb-4012-ba36-01014f12197a" width="30" height="30"> [LinkedIn](https://www.linkedin.com/in/yarinb/)
 
 <br />
