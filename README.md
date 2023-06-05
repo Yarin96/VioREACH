@@ -44,7 +44,7 @@ https://github.com/Yarin96/VioREACH/assets/94289687/db28f7b6-f808-42dd-a781-a623
 - To improve the accuracy of the algorithm in case it detects violent content, we used several classifiers performed on violent videos:
   - Pose estimation which is based on the [MoveNet](https://www.tensorflow.org/hub/tutorials/movenet) algorithm. It's built for speed, so it's good for real-time apps and to our purposes. Within the pose estimation component we implemented mathematical computations (such as punch detection in an interaction between two people) to gather more information about the situation occurring in the video.
   - Presence of blood using [SVMs](https://en.wikipedia.org/wiki/Support_vector_machine) (support vector machines).
-  - Scrum detection using a different YOLOv8 trained model as well.
+  - Crowdedness detection using a different YOLOv8 trained model as well.
 - A concept called "stacking" is then used to achieve the end result, if any, of categorized violence. The idea is to stack all the small and weak feature outputs and combine them into a final vector to feed into the final classifier. We found the [XGBoost](https://xgboost.readthedocs.io/en/stable/) classifier to be a perfect match for this task.
 
 <br />
