@@ -152,9 +152,15 @@ def assert_punch(person1, person2):
     is_arm_streched = False
     # is_movement_fast = False
     is_limbs_close_to_face = False
-    confidence = person1["left_shoulder"][-1]
-    if confidence < 0.01:
+    # TODO: added check for all points, not sure how it works with the whole system
+    minimun_confidence = 1
+    for point in person1:
+        minimun_confidence = min(minimun_confidence, point[-1])
+    if minimun_confidence < 0.01:
         return False
+    # confidence = person1["left_shoulder"][-1]
+    # if confidence < 0.01:
+    #     return False
     person1_left_arm_degree = get_arms_degrees("left", person1)
     person1_right_arm_degree = get_arms_degrees("right", person1)
     if person1_right_arm_degree > arm_streched or person1_left_arm_degree > arm_streched:
@@ -164,7 +170,7 @@ def assert_punch(person1, person2):
         right_wrist_to_face_dist = dist(person1["right_wrist"][:2], person2[head_point][:2])
         if left_wrist_to_face_dist < 0.08 or right_wrist_to_face_dist < 0.08:
             is_limbs_close_to_face = True
-    # TODO: if i find a way to detect speed  add the variable in the if statement bellow
+    # TODO: if i find a way to detect speed add the variable in the if statement below
     if is_arm_streched and is_limbs_close_to_face:
         return True
     else:
