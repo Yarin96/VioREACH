@@ -76,9 +76,7 @@ def pose_estimation(input_video):
     cap = cv2.VideoCapture(input_video)
     MIN_WIDTH = 256
     detected_anomally = 0
-    # Read until video is completed
     while cap.isOpened():
-        # Capture frame-by-frame, ret is just a return value, frame is the actual frame
         ret, frame = cap.read()
         if not ret:
             break
@@ -125,24 +123,19 @@ def pose_estimation(input_video):
         if detected_anomally == 0:
             detected_anomally = get_two_people_check_punch(keyPoints_with_scores)
         print("Detecting pose estimation anomalies..")
-        # Render keypoints
-        # draw_each_person(frame, keyPoints_with_scores, EDGES, 0.25)
-        # cv2.imshow("Movenet multipose", frame)
-        # # Press Q on keyboard to  exit
-        # if cv2.waitKey(10) & 0xFF == ord('q'):
-        #     break
-            # Break the loop
-    # When everything done, release the video capture object
+        # render_keypoints(frame, keyPoints_with_scores, 0.25)
     cap.release()
     cv2.destroyAllWindows()
     print("===============Finished pose analysis================")
     return detected_anomally
-    # Closes all the frames
 
 
-def check_movement_speed(frames, person):
-    # TODO: check if this is even possible, how can i know the detection across several frames belong to the same person?
-    pass
+def render_keypoints(frame, keypoints, confidence):
+    draw_each_person(frame, keypoints, EDGES, confidence)
+    cv2.imshow("Movenet multipose", frame)
+    # Press Q on keyboard to  exit
+    if cv2.waitKey(10) & 0xFF == ord('q'):
+        break
 
 
 def assert_punch(person1, person2):
@@ -150,17 +143,12 @@ def assert_punch(person1, person2):
     arm_points = ["left_shoulder", "left_elbow", "left_wrist", "right_shoulder", "right_elbow", "right_wrist"]
     arm_streched = 70
     is_arm_streched = False
-    # is_movement_fast = False
     is_limbs_close_to_face = False
-    # TODO: added check for all points, not sure how it works with the whole system
     minimun_confidence = 1
     for point in person1:
         minimun_confidence = min(minimun_confidence, point[-1])
     if minimun_confidence < 0.01:
         return False
-    # confidence = person1["left_shoulder"][-1]
-    # if confidence < 0.01:
-    #     return False
     person1_left_arm_degree = get_arms_degrees("left", person1)
     person1_right_arm_degree = get_arms_degrees("right", person1)
     if person1_right_arm_degree > arm_streched or person1_left_arm_degree > arm_streched:
@@ -194,11 +182,16 @@ def get_degree(ab, bc):
     return ans
 
 
+def print_person_keypoints(keypoints):
+    for i, person in enumerate(keypoints):
+        print(f"==========Person {i} keypoints=============")
+        for j, keypoint in enumerate(person):
+            print(f"Keypoint {j}: {keypoint}")
+
+
+
 def get_two_people_check_punch(keypoints):
-    # for i, person in enumerate(keypoints):
-    #     print(f"==========Person {i} keypoints=============")
-    #     for j, keypoint in enumerate(person):
-    #         print(f"Keypoint {j}: {keypoint}")
+    # print_person_keypoints(keypoints)
     joints = ["nose", "left_eye", "right_eye", "left_ear", "right_ear", "left_shoulder",
               "right_shoulder", "left_elbow", "right_elbow", "left_wrist", "right_wrist",
               "left_hip", "right_hip", "left_knee", "right_knee", "left_ankle", "right_ankle"]

@@ -21,7 +21,6 @@ def frame_capture(path):
     """Extract frames from a video with a given path"""
     print("Extracting frames..")
     main_directory = os.getcwd().replace("\\", "/")
-    # Path to video file
     vidObj = cv2.VideoCapture(path)
     dirToCreate = path[:str.rfind(path, ".")]
     fullDir = f"{main_directory}/YOLOv8Extraction/VideosFramesOutputs/{dirToCreate}"
@@ -29,14 +28,10 @@ def frame_capture(path):
         os.mkdir(fullDir)
     except:
         return
-    # Used as counter variable
     count = 1
-    # checks whether frames were extracted
     success = 1
 
     while success:
-        # vidObj object calls read
-        # function extract frames
         success, image = vidObj.read()
         if success:
             # Saves the frames with frame-count
@@ -97,7 +92,6 @@ def get_frames_identify_vectors(videoFileName, yaml_file, folder):
                 os.remove(fr"{main_directory}/YOLOv8Extraction/VideosFramesOutputs/{videoFileName}/frame{str(file)}.jpg")
             continue
         framesDetectionVectors.append(currentFile.readlines())
-    # printing_objects(framesDetectionVectors)
     return identify_classes(framesDetectionVectors, videoFileName, yaml_file, count)
 
 

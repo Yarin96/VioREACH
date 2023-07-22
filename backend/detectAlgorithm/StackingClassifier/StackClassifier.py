@@ -24,7 +24,7 @@ def define_xgboost(dataset):
     # Evaluate
     y_pred = xbg.predict(X_test)
     print_stats(xbg, y_test, y_pred, X_test)
-    # pickle.dump(xbg, open(f'{os.getcwd()}/rt.pkl', 'wb'))
+    pickle.dump(xbg, open(f'{os.getcwd()}/rt.pkl', 'wb'))
 
 
 def print_stats(model, yt, yp, xt):
@@ -44,5 +44,3 @@ def activation(vector):
     # define_xgboost(direc)
     vector_df = pd.DataFrame(vector, columns=["crowdiness", "Fast Moves", "Blood", "violence"])
     return reuse_model(vector_df)
-
-define_xgboost("./features.csv")

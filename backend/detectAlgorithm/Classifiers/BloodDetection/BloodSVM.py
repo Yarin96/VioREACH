@@ -43,16 +43,19 @@ def set_data():
 
     data = np.asarray(data)
     labels = np.asarray(labels)
-    # Split data
+
     return train_test_split(data, labels, test_size=0.2, stratify=labels, shuffle=True)
 
 
 def predict_model(img_pred, model):
     y_pred = model.predict(img_pred)
     return y_pred
-    # score = accuracy_score(y_pred, y_test)
-    # print("{}% of samples are correctly classified".format(str(score * 100)))
-    # print(classification_report(y_test, y_pred, target_names=['Blood', 'NoBlood']))
+
+
+def print_accuracy_results(pred, test):
+    score = accuracy_score(pred, test)
+    print("{}% of samples are correctly classified".format(str(score * 100)))
+    print(classification_report(test, pred, target_names=['Blood', 'NoBlood']))
 
 
 def classify():
@@ -105,7 +108,6 @@ def extract_color_features(image):
     mean_blue = np.mean(image[:, :, 2])
     std_blue = np.std(image[:, :, 2])
 
-    # Return color features as a numpy array
     color_features = np.array([mean_red, std_red, mean_green, std_green, mean_blue, std_blue])
 
     return color_features
