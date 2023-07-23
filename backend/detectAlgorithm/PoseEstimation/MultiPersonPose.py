@@ -57,7 +57,8 @@ def draw_connections(frame, keypoints, edges, confidence_threshold):
         y2, x2, c2 = shaped[p2]
 
         if (c1 > confidence_threshold) & (c2 > confidence_threshold):
-            cv2.line(frame, (int(x1), int(y1)), (int(x2), int(y2)), (0, 0, 255), 2)
+            cv2.line(frame, (int(x1), int(y1)),
+                     (int(x2), int(y2)), (0, 0, 255), 2)
 
 
 def draw_each_person(frame, keypoints_with_scores, edges, confidence_threshold):
@@ -103,7 +104,8 @@ def pose_estimation(input_video):
         # Resize the image, so it fit the model requierments into a copy, the detection will be on the copy, the result
         # render will be on the original frame.
         img = frame.copy()
-        img = tf.image.resize_with_pad(tf.expand_dims(img, axis=0), new_height, new_width)
+        img = tf.image.resize_with_pad(
+            tf.expand_dims(img, axis=0), new_height, new_width)
         input_img = tf.cast(img, dtype=tf.int32)
 
         # Make detection
@@ -111,7 +113,8 @@ def pose_estimation(input_video):
         # the shape for results is (1, 6, 56), the 6 represent each person it can detect
         # gives an array with 56 values, the first 51 are the keypoints, the last are the bounding boxes values
         # so grab only the first 51 values
-        keyPoints_with_scores = results["output_0"].numpy()[:, :, :51].reshape((6, 17, 3))
+        keyPoints_with_scores = results["output_0"].numpy()[
+            :, :, :51].reshape((6, 17, 3))
         # reshaping so we get an array for every person, and nested inside is an array for every keypoint
         # the 3 dimension is: x value, y value, and a score value(score is how confident is the model that the x,y coordinates are correct)
         # for each key point (total 17 key points * 3 values for each one)
@@ -121,7 +124,8 @@ def pose_estimation(input_video):
         # right shoulder, left elbow, right elbow, left wrist, right wrist, left hip, right hip, left knee, right knee, left ankle, right ankle].
         #########################################################################################################################################
         if detected_anomally == 0:
-            detected_anomally = get_two_people_check_punch(keyPoints_with_scores)
+            detected_anomally = get_two_people_check_punch(
+                keyPoints_with_scores)
         print("Detecting pose estimation anomalies..")
         # render_keypoints(frame, keyPoints_with_scores, 0.25)
     cap.release()
@@ -135,12 +139,13 @@ def render_keypoints(frame, keypoints, confidence):
     cv2.imshow("Movenet multipose", frame)
     # Press Q on keyboard to  exit
     if cv2.waitKey(10) & 0xFF == ord('q'):
-        break
+        return
 
 
 def assert_punch(person1, person2):
     head_points = ["nose", "left_eye", "right_eye", "left_ear", "right_ear"]
-    arm_points = ["left_shoulder", "left_elbow", "left_wrist", "right_shoulder", "right_elbow", "right_wrist"]
+    arm_points = ["left_shoulder", "left_elbow", "left_wrist",
+                  "right_shoulder", "right_elbow", "right_wrist"]
     arm_streched = 70
     is_arm_streched = False
     is_limbs_close_to_face = False
@@ -154,8 +159,10 @@ def assert_punch(person1, person2):
     if person1_right_arm_degree > arm_streched or person1_left_arm_degree > arm_streched:
         is_arm_streched = True
     for head_point in head_points:
-        left_wrist_to_face_dist = dist(person1["left_wrist"][:2], person2[head_point][:2])
-        right_wrist_to_face_dist = dist(person1["right_wrist"][:2], person2[head_point][:2])
+        left_wrist_to_face_dist = dist(
+            person1["left_wrist"][:2], person2[head_point][:2])
+        right_wrist_to_face_dist = dist(
+            person1["right_wrist"][:2], person2[head_point][:2])
         if left_wrist_to_face_dist < 0.08 or right_wrist_to_face_dist < 0.08:
             is_limbs_close_to_face = True
     # TODO: if i find a way to detect speed add the variable in the if statement below
@@ -187,7 +194,6 @@ def print_person_keypoints(keypoints):
         print(f"==========Person {i} keypoints=============")
         for j, keypoint in enumerate(person):
             print(f"Keypoint {j}: {keypoint}")
-
 
 
 def get_two_people_check_punch(keypoints):

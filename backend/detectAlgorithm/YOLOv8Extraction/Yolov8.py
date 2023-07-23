@@ -214,11 +214,6 @@ def assert_violence(detections, frames_amount):
     else:
         return 0
 
-            
-            
-
-
-
 
 def train_model(yaml_file, epochs):
     main_directory = os.getcwd().replace("\\", "/")
