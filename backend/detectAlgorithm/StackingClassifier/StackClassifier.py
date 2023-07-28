@@ -1,13 +1,15 @@
+import os
 import pickle
+
 import pandas as pd
 import xgboost
 from sklearn.metrics import accuracy_score, confusion_matrix
 from sklearn.model_selection import cross_val_score
 from sklearn.model_selection import train_test_split
-import os
 
 
 def define_xgboost(dataset):
+    """Gets CSV file and training a model"""
     df = pd.read_csv(dataset)
     X = df.drop(["fight"], axis=1)
     X = X.drop(['video_num'], axis=1)
@@ -28,6 +30,7 @@ def define_xgboost(dataset):
 
 
 def print_stats(model, yt, yp, xt):
+    """Print to the conosole model stats"""
     print(f"The features importance:\n{model.feature_importances_}")
     print(f"Confusion matrix(value 2 in row 1 and value 1 in row 2 are negatives):\n {confusion_matrix(yt, yp)}")
     print(f"Accuracy score: {accuracy_score(yt, yp)}")
@@ -35,11 +38,13 @@ def print_stats(model, yt, yp, xt):
 
 
 def reuse_model(prediction):
+    """Make a prediction for a vector"""
     saved_model = pickle.load(open(f'{os.getcwd()}/StackingClassifier/rt.pkl', 'rb'))
     return saved_model.predict(prediction)
 
 
 def activation(vector):
+    """Active the prediction process using pandas vector"""
     # direc = f'{os.getcwd()}/features.csv'
     # define_xgboost(direc)
     vector_df = pd.DataFrame(vector, columns=["crowdiness", "Fast Moves", "Blood", "violence"])

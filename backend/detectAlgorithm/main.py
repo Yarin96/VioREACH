@@ -1,17 +1,19 @@
-import YOLOv8Extraction.Yolov8 as yoloModule
-import Classifiers.BloodDetection.BloodSVM as bloodDetection
-import StackingClassifier.StackClassifier as xgb
-import PoseEstimation.MultiPersonPose as pose
 import os
 import shutil
+from urllib.request import urlretrieve
+
+import Classifiers.BloodDetection.BloodSVM as bloodDetection
+import PoseEstimation.MultiPersonPose as pose
+import StackingClassifier.StackClassifier as xgb
+import YOLOv8Extraction.Yolov8 as yoloModule
 # --------------------------------
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from urllib.request import urlretrieve
 
 
-
-def detect_blood(video, vector, yolo_detections, directory):
+def detect_blood(video, yolo_detections, directory):
+    blood_value = 0
+    """Using the yolo violent detections check for each detection if it contains blood"""
     imgs_dir = f"{directory}/YOLOv8Extraction/VideosFramesOutputs/{video[:str.rfind(video, '.')]}/"
     print("Checking for blood for every images containing violence")
     count = 0
@@ -33,14 +35,15 @@ def detect_blood(video, vector, yolo_detections, directory):
         if not os.path.isfile(imgSrc):
             continue
         pred = bloodDetection.reuse_model(imgSrc)[0]
-        if vector[2] == 0 and pred == 1:
+        if blood_value == 0 and pred == 1:
             # if found blood on one frame update the value and stop looking for new frame
-            vector[2] = 1
+            blood_value = 1
             break
-    return vector
+    return blood_value
 
 
 def get_only_violence_detections(arr):
+    """Gets array for full yolo detections, returns array with the violent detection only"""
     only_violence = []
     for frame in arr:
         for detection in frame:
@@ -50,6 +53,7 @@ def get_only_violence_detections(arr):
 
 
 def cleanups(directory, file, violnece_val):
+    """When the detection process ends cleanup the system and delete created folders and files"""
     if violnece_val != 0:
         crowdednessDir = f"{directory}/YOLOv8Extraction/VideosCrowdednessOutputs/" + file[:str.rfind(file, '.')]
         shutil.rmtree(crowdednessDir)
@@ -61,6 +65,7 @@ def cleanups(directory, file, violnece_val):
 
 
 def print_currect_detections(vector):
+    """Console print the current detections status"""
     detection_classes = ["crowdiness", "Fast Moves", "Blood", "violence"]
     for i, detection_class in enumerate(detection_classes):
         if vector[i] == 0:
@@ -90,7 +95,7 @@ def activate(videoFile):
     if ans_vector[3] == 1:
         # Only if YOLO identified violence continue to the other classifiers
         yolo_detec = get_only_violence_detections(yolo_detec)
-        ans_vector = detect_blood(videoFile, ans_vector, yolo_detec, main_directory)
+        ans_vector[2] = detect_blood(videoFile, yolo_detec, main_directory)
         ans_vector[1] = pose.pose_activation(videoFile)
         # After alll classifier worked:
         ans_vector = [ans_vector]

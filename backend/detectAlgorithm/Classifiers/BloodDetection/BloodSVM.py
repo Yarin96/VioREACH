@@ -1,19 +1,15 @@
-import pandas as pd
 import os
-import cv2
 import pickle
+
+import cv2
 import numpy as np
-import matplotlib.pyplot as plt
+from skimage.feature import hog
+from skimage.io import imread
 from sklearn import svm
-from sklearn.model_selection import GridSearchCV
-from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import classification_report
-from skimage.transform import resize
-from skimage.io import imread
-from skimage.feature import hog
-from skimage.color import rgb2gray
-
+from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import train_test_split
 
 input_dir = f"{os.getcwd()}/data/"
 categories = ['Blood', 'NoBlood']
@@ -21,6 +17,7 @@ input_features_expected = 1211544
 
 
 def set_data():
+    """Set the data for the training"""
     data = []
     labels = []
     max_feature_length = 0  # Maximum length of HOG features
@@ -47,24 +44,14 @@ def set_data():
     return train_test_split(data, labels, test_size=0.2, stratify=labels, shuffle=True)
 
 
-def predict_model(img_pred, model):
-    y_pred = model.predict(img_pred)
-    return y_pred
-
-
-def print_accuracy_results(pred, test):
-    score = accuracy_score(pred, test)
-    print("{}% of samples are correctly classified".format(str(score * 100)))
-    print(classification_report(test, pred, target_names=['Blood', 'NoBlood']))
-
-
 def classify():
+    """Define SVM models and save the best one"""
     # stratify - keep the same proportion for each label
     x_train, x_test, y_train, y_test = set_data()
     classifier = svm.SVC(probability=True)
     # needed to define because we are learning on different levels of gamma and value that show one image in few forms
     # training 24 classifiers on each image, and we will pick the best
-    parameters = [{'C': [0.1, 1, 10, 100], 'gamma':[0.001, 0.1, 1], 'kernel':['rbf', 'poly']}]
+    parameters = [{'C': [0.1, 1, 10, 100], 'gamma': [0.001, 0.1, 1], 'kernel': ['rbf', 'poly']}]
     grid_search = GridSearchCV(classifier, parameters, verbose=2, cv=4)
     grid_search.fit(x_train, y_train)
     best_model = grid_search.best_estimator_
@@ -75,13 +62,21 @@ def classify():
     pickle.dump(best_model, open("./modelwithHOG.p", "wb"))
 
 
+def predict_model(img_pred, model):
+    """Make a prediction given an image and model"""
+    y_pred = model.predict(img_pred)
+    return y_pred
 
-    # save the model
-    # pickle.dump(best_model, open("./model.p", "wb"))
+
+def print_accuracy_results(pred, test):
+    """Print to the console the accuracy resaults for given model"""
+    score = accuracy_score(pred, test)
+    print("{}% of samples are correctly classified".format(str(score * 100)))
+    print(classification_report(test, pred, target_names=['Blood', 'NoBlood']))
 
 
 def reuse_model(img_path):
-    """Enter the directory"""
+    """Enter the directory, returns the prediction for this image"""
     # x_train, x_test, y_train, y_test = set_data()
     # to load the model:
     main_directory = os.getcwd().replace("\\", "/")
@@ -98,9 +93,7 @@ def reuse_model(img_path):
 
 
 def extract_color_features(image):
-
-    # Extract color features
-    # Example: Mean and standard deviation of each color channel
+    """Extract color features, deviation and mean for every color channel"""
     mean_red = np.mean(image[:, :, 0])
     std_red = np.std(image[:, :, 0])
     mean_green = np.mean(image[:, :, 1])
@@ -114,7 +107,7 @@ def extract_color_features(image):
 
 
 def extract_hog_features(image):
-    # Convert image to grayscale
+    """Gets features using HOG on grayscaled image"""
     if len(image.shape) == 2:
         gray = image
     else:
@@ -129,6 +122,7 @@ def extract_hog_features(image):
 
 
 def extract_features(image):
+    """Returing features array consists of both HOG features and color features"""
     hog_features = extract_hog_features(image)
     color_features = extract_color_features(image)
 
@@ -136,13 +130,3 @@ def extract_features(image):
     features = np.concatenate((hog_features, color_features), axis=0)
 
     return features
-
-
-
-
-
-
-
-
-
-

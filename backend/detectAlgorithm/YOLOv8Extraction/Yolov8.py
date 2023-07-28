@@ -1,18 +1,20 @@
-from ultralytics import YOLO as yolo
-import cv2
-import yaml
 import os
 import shutil
 
+import cv2
+import yaml
+from ultralytics import YOLO as yolo
 
 
 def first_time_setups():
+    """Creating folders for the first time running the algorithm"""
     main_directory = os.getcwd().replace("\\", "/")
     os.mkdir(f"{main_directory}/YOLOv8Extraction/VideosFramesOutputs")
     os.mkdir(f"{main_directory}/YOLOv8Extraction/VideosPredictionsOutputs")
 
 
 def printing_objects(obj_list):
+    """Print all the detected objects to the console"""
     for obj in obj_list:
         print(obj)
 
@@ -51,26 +53,33 @@ def define_and_predict_yolov8(videoToPredict, weights):
     model.predict(videoToPredict, save=True, save_txt=True)
     src = f"{main_directory}/runs/detect/predict"
     if weights == "Violence_best":
-        os.mkdir(f"{main_directory}/YOLOv8Extraction/VideosPredictionsOutputs/" + videoToPredict[:str.rfind(videoToPredict, ".")])
-        dst = f"{main_directory}/YOLOv8Extraction/VideosPredictionsOutputs/" + videoToPredict[:str.rfind(videoToPredict, ".")]
-        allfiles = os.listdir(src)
-        for file in allfiles:
-            src_path = os.path.join(src, file)
-            dst_path = os.path.join(dst, file)
-            os.rename(src_path, dst_path)
-        os.rmdir(src)
+        os.mkdir(f"{main_directory}/YOLOv8Extraction/VideosPredictionsOutputs/" + videoToPredict[
+                                                                                  :str.rfind(videoToPredict, ".")])
+        dst = f"{main_directory}/YOLOv8Extraction/VideosPredictionsOutputs/" + videoToPredict[
+                                                                               :str.rfind(videoToPredict, ".")]
+        # allfiles = os.listdir(src)
+        # for file in allfiles:
+        #     src_path = os.path.join(src, file)
+        #     dst_path = os.path.join(dst, file)
+        #     os.rename(src_path, dst_path)
+        # os.rmdir(src)
     else:
         os.mkdir(f"{main_directory}/YOLOv8Extraction/VideosCrowdednessOutputs/" + videoToPredict[
                                                                                   :str.rfind(videoToPredict, ".")])
         dst = f"{main_directory}/YOLOv8Extraction/VideosCrowdednessOutputs/" + videoToPredict[
                                                                                :str.rfind(videoToPredict, ".")]
-        allfiles = os.listdir(src)
-        for file in allfiles:
-            src_path = os.path.join(src, file)
-            dst_path = os.path.join(dst, file)
-            os.rename(src_path, dst_path)
-        os.rmdir(src)
-
+        # allfiles = os.listdir(src)
+        # for file in allfiles:
+        #     src_path = os.path.join(src, file)
+        #     dst_path = os.path.join(dst, file)
+        #     os.rename(src_path, dst_path)
+        # os.rmdir(src)
+    allfiles = os.listdir(src)
+    for file in allfiles:
+        src_path = os.path.join(src, file)
+        dst_path = os.path.join(dst, file)
+        os.rename(src_path, dst_path)
+    os.rmdir(src)
 
 
 def get_frames_identify_vectors(videoFileName, yaml_file, folder):
@@ -79,7 +88,6 @@ def get_frames_identify_vectors(videoFileName, yaml_file, folder):
     directory = fr"{main_directory}/YOLOv8Extraction/{folder}/{videoFileName}/labels/"
     count = 0
     framesDetectionVectors = []
-    # Iterate directory
     for path in os.listdir(directory):
         # check if current path is a file
         if os.path.isfile(os.path.join(directory, path)):
@@ -88,14 +96,17 @@ def get_frames_identify_vectors(videoFileName, yaml_file, folder):
         try:
             currentFile = open(directory + videoFileName + "_" + str(file) + ".txt")
         except FileNotFoundError:
-            if os.path.exists(fr"{main_directory}/YOLOv8Extraction/VideosFramesOutputs/{videoFileName}/frame{str(file)}.jpg"):
-                os.remove(fr"{main_directory}/YOLOv8Extraction/VideosFramesOutputs/{videoFileName}/frame{str(file)}.jpg")
+            if os.path.exists(
+                    fr"{main_directory}/YOLOv8Extraction/VideosFramesOutputs/{videoFileName}/frame{str(file)}.jpg"):
+                os.remove(
+                    fr"{main_directory}/YOLOv8Extraction/VideosFramesOutputs/{videoFileName}/frame{str(file)}.jpg")
             continue
         framesDetectionVectors.append(currentFile.readlines())
     return identify_classes(framesDetectionVectors, videoFileName, yaml_file, count)
 
 
 def show_boundingBox_image(img, top_left, bottom_right):
+    """Show the frame with the bounding box detected"""
     img2 = cv2.rectangle(img, top_left, bottom_right, (0, 255, 0), 5)
     cv2.imshow("image", img2)
     cv2.waitKey(0)
@@ -103,6 +114,7 @@ def show_boundingBox_image(img, top_left, bottom_right):
 
 
 def identify_classes(processed_frames, videoFileName, yaml_file, num_of_frames):
+    """Determain for each detection what class it is."""
     main_directory = os.getcwd().replace("\\", "/")
     yolo_classes = open(f"{main_directory}/YOLOv8Extraction/{yaml_file}.yaml", encoding="utf8")
     names = yaml.safe_load(yolo_classes)["names"]
@@ -150,17 +162,14 @@ def identify_classes(processed_frames, videoFileName, yaml_file, num_of_frames):
                             int(obj[2]["centerYcor"] + obj[4]["normalizedHeight"] / 2))
             classDescription = list(obj[0].items())
             classDescription = classDescription[0]
-            classCodeInYamlFile = classDescription[0]  # if ever needed when building own yaml file
             one_frame_objs.append(
                 {"frame": frame_num, "class": classDescription[1], "top_left": top_left, "bottom_right": bottom_right})
 
         real_bounding_boxes.append(one_frame_objs)
         one_frame_objs = []
     if yaml_file == "data":
-                ans_value = assert_violence(real_bounding_boxes, num_of_frames)
+        ans_value = assert_violence(real_bounding_boxes, num_of_frames)
     if yaml_file == "coco8":
-        # used a new array even though we could reuse one, because test for the crowdedness dont need the actual location
-        # in the photo, just the exsistance, and some images wont load, so we still test for crowdedness in those
         for frame in only_classes_all_frames:
             count = 0
             for find in frame:
@@ -172,7 +181,6 @@ def identify_classes(processed_frames, videoFileName, yaml_file, num_of_frames):
             if ans_value == 1:
                 break
 
-
     if yaml_file == "coco8":
         return ans_value
     else:
@@ -180,6 +188,7 @@ def identify_classes(processed_frames, videoFileName, yaml_file, num_of_frames):
 
 
 def assert_violence(detections, frames_amount):
+    """Returns true if the vidoe is violent. Determained if 10% of the video is violent and there are 5 consecutive violent frames"""
     consecutive_frames = 5
     print(f"NUM OF FRAMES {frames_amount}")
     images_threshold = frames_amount * 0.1
@@ -193,7 +202,7 @@ def assert_violence(detections, frames_amount):
     for frame in detections:
         for detecion in frame:
             if first_loop:
-                if  detecion["class"] == "Violence":
+                if detecion["class"] == "Violence":
                     prev_consecutive_frames = current_consecutive_frames = current_consecutive_frames + 1
                 first_loop = False
             elif detecion["class"] == "Violence":
@@ -216,12 +225,14 @@ def assert_violence(detections, frames_amount):
 
 
 def train_model(yaml_file, epochs):
+    """Train the yolo model based on the yaml file as input, for number of epochs spesified"""
     main_directory = os.getcwd().replace("\\", "/")
     model_to_train = yolo(f"{main_directory}/YOLOv8Extraction/yolov8x.yaml")
     return model_to_train.train(data=yaml_file, epochs=epochs, workers=2)
 
 
 def active_detection(video):
+    """Active the detection for both crowdness and violence given video input"""
     # yaml_file for violence = data | yaml_file for crowd = coco8
     # weights file for violence = Violence_best | weights file for violence = yolov8s
     # first_time_setups()
@@ -242,12 +253,14 @@ def active_detection(video):
     define_and_predict_yolov8(video, violence_weights)  # gets the full file name
     if os.path.exists(f"{main_directory}/runs"):
         shutil.rmtree(f"{main_directory}/runs")
-    violence_value, real_bounding_boxes = get_frames_identify_vectors(videoFileForFrames, violence_yaml_file, folder_for_violence_outputs)
+    violence_value, real_bounding_boxes = get_frames_identify_vectors(videoFileForFrames, violence_yaml_file,
+                                                                      folder_for_violence_outputs)
     # If ciolence found detect for crowdedness
     if violence_value == 1:
         define_and_predict_yolov8(video, crowdedness_weights)  # gets the full file name
         if os.path.exists(f"{main_directory}/runs"):
             shutil.rmtree(f"{main_directory}/runs")
-        crowdedness_value = get_frames_identify_vectors(videoFileForFrames, crowdedness_yaml_file, folder_for_crowd_outputs)
+        crowdedness_value = get_frames_identify_vectors(videoFileForFrames, crowdedness_yaml_file,
+                                                        folder_for_crowd_outputs)
 
     return violence_value, crowdedness_value, real_bounding_boxes

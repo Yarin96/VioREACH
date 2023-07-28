@@ -1,10 +1,11 @@
-import tensorflow as tf
-import tensorflow_hub as hub
-import cv2
-from matplotlib import pyplot as plt
-import numpy as np
 import os
 from math import atan, pi, dist
+
+import cv2
+import numpy as np
+import tensorflow as tf
+import tensorflow_hub as hub
+from matplotlib import pyplot as plt
 
 EDGES = {
     (0, 1): 'm',
@@ -68,7 +69,16 @@ def draw_each_person(frame, keypoints_with_scores, edges, confidence_threshold):
         draw_keypoints(frame, person, confidence_threshold)
 
 
+def render_keypoints(frame, keypoints, confidence):
+    draw_each_person(frame, keypoints, EDGES, confidence)
+    cv2.imshow("Movenet multipose", frame)
+    # Press Q on keyboard to  exit
+    if cv2.waitKey(10) & 0xFF == ord('q'):
+        return
+
+
 def pose_estimation(input_video):
+    """Get video path and start the analysis process"""
     main_directory = os.getcwd().replace("\\", "/")
     # Using movenet model
     # https://tfhub.dev/google/movenet/multipose/lightning/1
@@ -114,7 +124,7 @@ def pose_estimation(input_video):
         # gives an array with 56 values, the first 51 are the keypoints, the last are the bounding boxes values
         # so grab only the first 51 values
         keyPoints_with_scores = results["output_0"].numpy()[
-            :, :, :51].reshape((6, 17, 3))
+                                :, :, :51].reshape((6, 17, 3))
         # reshaping so we get an array for every person, and nested inside is an array for every keypoint
         # the 3 dimension is: x value, y value, and a score value(score is how confident is the model that the x,y coordinates are correct)
         # for each key point (total 17 key points * 3 values for each one)
@@ -123,10 +133,14 @@ def pose_estimation(input_video):
         # The order of the 17 keypoint joints is: [nose, left eye, right eye, left ear, right ear, left shoulder,
         # right shoulder, left elbow, right elbow, left wrist, right wrist, left hip, right hip, left knee, right knee, left ankle, right ankle].
         #########################################################################################################################################
+        print("Detecting pose estimation anomalies..")
         if detected_anomally == 0:
             detected_anomally = get_two_people_check_punch(
                 keyPoints_with_scores)
-        print("Detecting pose estimation anomalies..")
+        else:
+            # Stop if already found a punch in one of the frames
+            print("===============Finished pose analysis================")
+            return detected_anomally
         # render_keypoints(frame, keyPoints_with_scores, 0.25)
     cap.release()
     cv2.destroyAllWindows()
@@ -134,45 +148,39 @@ def pose_estimation(input_video):
     return detected_anomally
 
 
-def render_keypoints(frame, keypoints, confidence):
-    draw_each_person(frame, keypoints, EDGES, confidence)
-    cv2.imshow("Movenet multipose", frame)
-    # Press Q on keyboard to  exit
-    if cv2.waitKey(10) & 0xFF == ord('q'):
-        return
-
-
 def assert_punch(person1, person2):
+    """Get 2 people and assert if person 1 punch person 2"""
     head_points = ["nose", "left_eye", "right_eye", "left_ear", "right_ear"]
-    arm_points = ["left_shoulder", "left_elbow", "left_wrist",
-                  "right_shoulder", "right_elbow", "right_wrist"]
+    arm_points = ["left_shoulder", "left_elbow", "left_wrist", "right_shoulder", "right_elbow", "right_wrist"]
     arm_streched = 70
-    is_arm_streched = False
-    is_limbs_close_to_face = False
+    min_dist_to_face = 0.08
+    confidence_threshold = 0.01
+    is_punch = False
     minimun_confidence = 1
-    for point in person1:
-        minimun_confidence = min(minimun_confidence, point[-1])
-    if minimun_confidence < 0.01:
+    for head_point in head_points:
+        minimun_confidence = min(person2[head_point][-1], minimun_confidence)
+    for arm_point in arm_points:
+        minimun_confidence = min(person1[arm_point][-1], minimun_confidence)
+    if minimun_confidence < confidence_threshold:
         return False
+
     person1_left_arm_degree = get_arms_degrees("left", person1)
     person1_right_arm_degree = get_arms_degrees("right", person1)
-    if person1_right_arm_degree > arm_streched or person1_left_arm_degree > arm_streched:
-        is_arm_streched = True
+
     for head_point in head_points:
         left_wrist_to_face_dist = dist(
             person1["left_wrist"][:2], person2[head_point][:2])
         right_wrist_to_face_dist = dist(
             person1["right_wrist"][:2], person2[head_point][:2])
-        if left_wrist_to_face_dist < 0.08 or right_wrist_to_face_dist < 0.08:
-            is_limbs_close_to_face = True
-    # TODO: if i find a way to detect speed add the variable in the if statement below
-    if is_arm_streched and is_limbs_close_to_face:
-        return True
-    else:
-        return False
+        if (left_wrist_to_face_dist < min_dist_to_face and person1_left_arm_degree > arm_streched) or (
+                right_wrist_to_face_dist < min_dist_to_face and person1_right_arm_degree > arm_streched):
+            is_punch = True
+
+    return is_punch
 
 
 def get_arms_degrees(side, person):
+    """Calculate elbow degree"""
     person_shoulder = person[f"{side}_shoulder"][:2]
     person_elbow = person[f"{side}_elbow"][:2]
     person_wrist = person[f"{side}_wrist"][:2]
@@ -182,6 +190,8 @@ def get_arms_degrees(side, person):
 
 
 def get_degree(ab, bc):
+    """Get degree bewteen 2 edges"""
+
     def deg(rad):
         return 180 / pi * rad
 
@@ -190,6 +200,7 @@ def get_degree(ab, bc):
 
 
 def print_person_keypoints(keypoints):
+    """Concole print the identified people and thier keypoints"""
     for i, person in enumerate(keypoints):
         print(f"==========Person {i} keypoints=============")
         for j, keypoint in enumerate(person):
@@ -197,6 +208,7 @@ def print_person_keypoints(keypoints):
 
 
 def get_two_people_check_punch(keypoints):
+    """Takes 6 people array and check punch for every couple"""
     # print_person_keypoints(keypoints)
     joints = ["nose", "left_eye", "right_eye", "left_ear", "right_ear", "left_shoulder",
               "right_shoulder", "left_elbow", "right_elbow", "left_wrist", "right_wrist",
@@ -217,5 +229,6 @@ def get_two_people_check_punch(keypoints):
 
 
 def pose_activation(video):
+    """Active detection, gets the video path"""
     set_gpu_memory()
     return pose_estimation(video)
