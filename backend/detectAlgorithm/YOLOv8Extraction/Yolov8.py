@@ -57,23 +57,12 @@ def define_and_predict_yolov8(videoToPredict, weights):
                                                                                   :str.rfind(videoToPredict, ".")])
         dst = f"{main_directory}/YOLOv8Extraction/VideosPredictionsOutputs/" + videoToPredict[
                                                                                :str.rfind(videoToPredict, ".")]
-        # allfiles = os.listdir(src)
-        # for file in allfiles:
-        #     src_path = os.path.join(src, file)
-        #     dst_path = os.path.join(dst, file)
-        #     os.rename(src_path, dst_path)
-        # os.rmdir(src)
     else:
         os.mkdir(f"{main_directory}/YOLOv8Extraction/VideosCrowdednessOutputs/" + videoToPredict[
                                                                                   :str.rfind(videoToPredict, ".")])
         dst = f"{main_directory}/YOLOv8Extraction/VideosCrowdednessOutputs/" + videoToPredict[
                                                                                :str.rfind(videoToPredict, ".")]
-        # allfiles = os.listdir(src)
-        # for file in allfiles:
-        #     src_path = os.path.join(src, file)
-        #     dst_path = os.path.join(dst, file)
-        #     os.rename(src_path, dst_path)
-        # os.rmdir(src)
+
     allfiles = os.listdir(src)
     for file in allfiles:
         src_path = os.path.join(src, file)
